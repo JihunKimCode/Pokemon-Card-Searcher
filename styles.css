@@ -252,13 +252,15 @@ footer a:hover{
 
     #output{
         width: 100%;
-        gap: 5px;
+        grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+        row-gap: 5px;
+        column-gap: 0px;
         margin-left: 0px;
         margin-right: 0px;
     }
 
     .card{
-        width: 90%;
+        width: 85%;
     }
 
     h3{
