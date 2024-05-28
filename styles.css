@@ -118,10 +118,10 @@ h3{
 }
 
 .card {
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 5px;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #fff;
     text-align: center;
     width: 200px;
 }
