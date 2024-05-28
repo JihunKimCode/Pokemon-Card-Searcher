@@ -3,16 +3,6 @@ var currentYear = new Date().getFullYear();
 document.getElementById("year").innerHTML = currentYear;
 document.getElementById("year2").innerHTML = currentYear;
 
-const scrollTopButton = document.getElementById("scrollTop");
-
-// Set Scroll up Button
-scrollTopButton.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-});  
-
 // Search button
 document.getElementById('fetchButton').addEventListener('click', fetchCards);
 document.getElementById('searchQuery').addEventListener('keypress', function(event) {
@@ -187,23 +177,26 @@ function fetchCards() {
         });
 }
 
-function showPopup(imageUrl, name) {
+function showPopup(image, name) {
     const popup = document.getElementById('popup');
     const popupImage = document.getElementById('popupImage');
     const caption = document.getElementById('caption');
 
     popup.style.display = "block";
-    popupImage.src = imageUrl;
+    popupImage.src = image;
     caption.innerText = name;
+    document.body.style.overflow = "hidden";
 
     const close = document.getElementsByClassName('close')[0];
     close.onclick = function() {
         popup.style.display = "none";
+        document.body.style.overflow = "auto";
     };
 
     window.onclick = function(event) {
         if (event.target == popup) {
             popup.style.display = "none";
+            document.body.style.overflow = "auto";
         }
     };
 }
@@ -217,3 +210,20 @@ function setActiveButton(activeButton) {
 function setSearchPlaceholder(placeholderText) {
     document.getElementById('searchQuery').placeholder = placeholderText;
 }
+
+// Scroll to Top button logic
+const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+window.onscroll = function() { scrollFunction(); };
+
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollTopBtn.style.display = "block";
+    } else {
+        scrollTopBtn.style.display = "none";
+    }
+}
+
+scrollTopBtn.addEventListener('click', function() {
+    document.documentElement.scrollIntoView({ behavior: 'smooth' });
+});

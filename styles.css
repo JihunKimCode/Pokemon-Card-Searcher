@@ -163,57 +163,56 @@ h3{
 }
 
 /* Popup Styles */
-.popup {
+#popup {
     display: none;
     position: fixed;
-    z-index: 1;
-    padding-top: 60px;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
     overflow: auto;
-    background-color: rgba(0,0,0,0.9);
 }
 
-.popup-content {
-    margin: auto;
+#popupImage {
     display: block;
-    width: 80%;
-    max-width: 700px;
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #caption {
-    margin: auto;
     display: block;
+    color: white;
     text-align: center;
-    color: #ccc;
-    padding: 10px 0;
-    height: 150px;
+    margin-top: 20px;
 }
 
 .close {
     position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
+    top: 10px;
+    right: 15px;
+    color: #ffffff;
+    font-size: 30px;
     font-weight: bold;
-    transition: 0.3s;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-.close:hover,
-.close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
+.close:hover {
+    color: #aaaaaa;
 }
 
 footer {
     background-color: #ccc;
     color: white;
     text-align: left;
-    margin: 15px 0px 0px 0px!important;
+    margin: 15px 0px 0px 0px;
 }
 
 footer a{
@@ -239,6 +238,26 @@ footer a:hover{
     font-size: 24px;
     cursor: pointer;
     color: white;
+}
+
+#scrollTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #ccc;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+
+#scrollTopBtn:hover {
+    background-color: #e2e2e2;
 }
 
 @media only screen and (max-width: 1024px) {
