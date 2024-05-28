@@ -185,18 +185,18 @@ h3{
 
 footer {
     background-color: #ccc;
-    color: var(--text, white);
+    color: white;
     text-align: left;
     margin: 15px 0px 0px 0px!important;
 }
 
 footer a{
-    color: var(--text, white);
+    color: white;
     text-decoration: underline;
 }
 
 footer a:hover{
-    color: var(--lightpokemoncolor, #00d6fa);
+    color: #e2e2e2;
 }
 
 .footerContent{
