@@ -15,50 +15,29 @@
 <body>
 
 <div class="header">
-    <h1>Pokémon Card Searcher</h1>
+    <h1><a href="index.html">Pokémon Card Searcher</a></h1>
     <div class="searchTools">
         <div class="search-options">
-            <button id="pokemonNameBtn" class="active">Search Pokémon/Trainer</button>
-            <button id="artistNameBtn">Search Artist</button>
-            <button id="setListBtn">Search Set List</button>
+            <button id="pokemonNameBtn" class="active">Pokémon/Trainer</button>
+            <button id="artistNameBtn">Artist</button>
+            <button id="setListBtn">Set List</button>
         </div>
         <div class="filter-container">
-            <select id="rarityFilter">
-                <option value="">Filter by Rarity</option>
-                <option value="Amazing Rare">Amazing Rare</option>
-                <option value="Common">Common</option>
-                <option value="LEGEND">LEGEND</option>
-                <option value="Promo">Promo</option>
-                <option value="Rare">Rare</option>
-                <option value="Rare ACE">Rare ACE</option>
-                <option value="Rare BREAK">Rare BREAK</option>
-                <option value="Rare Holo">Rare Holo</option>
-                <option value="Rare Holo EX">Rare Holo EX</option>
-                <option value="Rare Holo GX">Rare Holo GX</option>
-                <option value="Rare Holo LV.X">Rare Holo LV.X</option>
-                <option value="Rare Holo Star">Rare Holo Star</option>
-                <option value="Rare Holo V">Rare Holo V</option>
-                <option value="Rare Holo VMAX">Rare Holo VMAX</option>
-                <option value="Rare Prime">Rare Prime</option>
-                <option value="Rare Prism Star">Rare Prism Star</option>
-                <option value="Rare Rainbow">Rare Rainbow</option>
-                <option value="Rare Secret">Rare Secret</option>
-                <option value="Rare Shining">Rare Shining</option>
-                <option value="Rare Shiny">Rare Shiny</option>
-                <option value="Rare Shiny GX">Rare Shiny GX</option>
-                <option value="Rare Ultra">Rare Ultra</option>
-                <option value="Uncommon">Uncommon</option>
-            </select>    
-            <select id="sortOrder">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="highRarity">High Rarity First</option>
-                <option value="lowRarity">Low Rarity First</option>
-                <option value="highPrice">High Price First</option>
-                <option value="lowPrice">Low Price First</option>
-            </select>
+            <div class="options">
+                <select id="rarityFilter">
+                    <option value="">Filter by Rarity</option>
+                </select>    
+                <select id="sortOrder">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="highRarity">High Rarity First</option>
+                    <option value="lowRarity">Low Rarity First</option>
+                    <option value="highPrice">High Price First</option>
+                    <option value="lowPrice">Low Price First</option>
+                </select>
+            </div>
             <div class="searcher">
-                <input type="text" id="searchQuery" placeholder="Enter Pokémon name">
+                <input type="text" id="searchQuery" placeholder="Enter Card name">
                 <button id="fetchButton"><i class="fa fa-search"></i></button>
             </div>
         </div>

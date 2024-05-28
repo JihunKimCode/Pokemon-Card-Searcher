@@ -30,7 +30,7 @@ const setListBtn = document.getElementById('setListBtn');
 
 pokemonNameBtn.addEventListener('click', function() {
     setActiveButton(pokemonNameBtn);
-    setSearchPlaceholder("Enter Pokémon name");
+    setSearchPlaceholder("Enter Card name");
 });
 artistNameBtn.addEventListener('click', function() {
     setActiveButton(artistNameBtn);
@@ -45,9 +45,12 @@ const rarityOrder = {
     "Common": 1,
     "Uncommon": 2,
     "Rare": 3,
+    "Radiant Rare": 3,
     "Amazing Rare": 4,
+    "Double Rare": 4,
     "Rare Holo": 5,
     "Rare ACE": 5,
+    "Ultra Rare": 6,
     "Rare Ultra": 6,
     "Rare Holo Star": 6,
     "Rare Prism Star": 6,
@@ -58,6 +61,7 @@ const rarityOrder = {
     "Rare Holo EX": 6,
     "Rare Holo GX": 6,
     "Rare Holo V": 6,
+    "Rare Holo VSTAR": 6,
     "Rare Holo VMAX": 6,
     "Rare Secret": 7,
     "Trainer Gallery Rare Holo": 7,
@@ -65,9 +69,27 @@ const rarityOrder = {
     "Rare Shining": 7,
     "Rare Shiny": 7,
     "Rare Shiny GX": 7,
-    "Illustration Rare": 7,
-    "Promo": 8,
+    "ACE SPEC Rare": 7,
+    "Illustration Rare": 8,
+    "Special Illustration Rare": 8,
+    "Hyper Rare": 9,
+    "Promo": 9,
 };
+
+function populateRarityOptions(cards) {
+    const rarities = new Set(cards.map(card => card.rarity).filter(rarity => rarity));
+    const rarityFilter = document.getElementById('rarityFilter');
+    const existingOptions = new Set(Array.from(rarityFilter.options).map(option => option.value));
+
+    rarities.forEach(rarity => {
+        if (!existingOptions.has(rarity)) {
+            const option = document.createElement('option');
+            option.value = rarity;
+            option.textContent = rarity;
+            rarityFilter.appendChild(option);
+        }
+    });
+}
 
 // Get price of the card
 const getPrice = (card) => {
@@ -109,7 +131,6 @@ function fetchCards() {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             const outputDiv = document.getElementById('output');
             outputDiv.innerHTML = '';
 
@@ -117,6 +138,8 @@ function fetchCards() {
                 outputDiv.innerHTML = '<p class="error">No cards found for this query.</p>';
                 return;
             }
+
+            populateRarityOptions(data.data);
 
             let filteredData = data.data;
             if (rarityFilter) {
