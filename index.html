@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Card Searcher</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>    
+
+</head>
+<body>
+
+<div class="header">
+    <h1>Pokémon Card Searcher</h1>
+    <div class="searchTools">
+        <div class="search-options">
+            <button id="pokemonNameBtn" class="active">Search Pokémon/Trainer</button>
+            <button id="artistNameBtn">Search Artist</button>
+            <button id="setListBtn">Search Set List</button>
+        </div>
+        <div class="filter-container">
+            <select id="rarityFilter">
+                <option value="">Filter by Rarity</option>
+                <option value="Amazing Rare">Amazing Rare</option>
+                <option value="Common">Common</option>
+                <option value="LEGEND">LEGEND</option>
+                <option value="Promo">Promo</option>
+                <option value="Rare">Rare</option>
+                <option value="Rare ACE">Rare ACE</option>
+                <option value="Rare BREAK">Rare BREAK</option>
+                <option value="Rare Holo">Rare Holo</option>
+                <option value="Rare Holo EX">Rare Holo EX</option>
+                <option value="Rare Holo GX">Rare Holo GX</option>
+                <option value="Rare Holo LV.X">Rare Holo LV.X</option>
+                <option value="Rare Holo Star">Rare Holo Star</option>
+                <option value="Rare Holo V">Rare Holo V</option>
+                <option value="Rare Holo VMAX">Rare Holo VMAX</option>
+                <option value="Rare Prime">Rare Prime</option>
+                <option value="Rare Prism Star">Rare Prism Star</option>
+                <option value="Rare Rainbow">Rare Rainbow</option>
+                <option value="Rare Secret">Rare Secret</option>
+                <option value="Rare Shining">Rare Shining</option>
+                <option value="Rare Shiny">Rare Shiny</option>
+                <option value="Rare Shiny GX">Rare Shiny GX</option>
+                <option value="Rare Ultra">Rare Ultra</option>
+                <option value="Uncommon">Uncommon</option>
+            </select>    
+            <select id="sortOrder">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highRarity">High Rarity First</option>
+                <option value="lowRarity">Low Rarity First</option>
+                <option value="highPrice">High Price First</option>
+                <option value="lowPrice">Low Price First</option>
+            </select>
+            <div class="searcher">
+                <input type="text" id="searchQuery" placeholder="Enter Pokémon name">
+                <button id="fetchButton"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="output"></div>
+
+<div id="popup" class="popup">
+    <span class="close">&times;</span>
+    <img class="popup-content" id="popupImage">
+    <div id="caption"></div>
+</div>
+</body>
+<footer>
+    <div class="footerContent">
+        <p>
+            Images and data are sourced from
+            <a href="https://pokemontcg.io/" target="_blank" rel="noopener noreferrer">Pokémon TCG Developers</a>.
+      <br>©<span id="year"></span> Pokémon. ©1995 - <span id="year2"></span> Nintendo/Creatures Inc./GAME FREAK inc. TM, ®Nintendo.
+    </p>
+    <button id="scrollTop"><i class="fa-solid fa-chevron-up"></i></button>
+</div>
+</footer>
+<script src="script.js"></script>
+</html>

@@ -1,0 +1,242 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+
+h1 {
+    margin: 0;
+}
+
+#sortOrder, #rarityFilter{
+    padding: 5px;    
+    background: #fff;
+    color: #000;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-family: 'NanumB', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 6px;
+    overflow: hidden;
+    width: 130px;
+
+    transition: height .4s ease;
+}
+
+#sortOrder option, #rarityFilter option{
+    font-size: 12px;
+}
+
+.searchTools{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    float: right;
+}
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    float: right;
+}
+
+.filter-container input[type="text"], .filter-container select {
+    margin-left: 10px;
+}
+
+.filter-container input[type="text"]{
+    padding: 6px;
+    font-size: 17px;
+    border: none;
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
+    width: 270px;
+}
+
+.filter-container button {
+    width: 32px;
+    float: right;
+    padding: 6px 0px;
+    margin-right: 0px;
+    background: var(--pokemoncolor, #ccc);
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
+}
+
+.search-options {
+    display: flex;
+    float: right;
+    margin-bottom: 10px;
+}
+
+.search-options button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/*No margin for last item*/
+.search-options button:not(:last-child) {
+    margin-right: 10px;
+}
+
+.search-options button.active {
+    background-color: #ccc;
+}
+
+#output {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+h3{
+    height: 50px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    text-align: center;
+    width: 200px;
+}
+
+.card img {
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.popup-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+
+#caption {
+    margin: auto;
+    display: block;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #ccc;
+    color: var(--text, white);
+    text-align: left;
+    margin: 15px 0px 0px 0px!important;
+}
+
+footer a{
+    color: var(--text, white);
+    text-decoration: underline;
+}
+
+footer a:hover{
+    color: var(--lightpokemoncolor, #00d6fa);
+}
+
+.footerContent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+#scrollTop{
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+@media only screen and (max-width: 1024px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .searchTools{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        float: right;
+    }
+
+    .search-options{
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .filter-container {
+        flex-direction: column-reverse;
+        width: 100%;
+        align-items: flex-end;
+    }
+
+    .filter-container select, .filter-container input[type="text"], .filter-container button {
+        margin: 5px 0;
+    }
+
+    #sortOrder, #rarityFilter{
+        margin-right: 0px;
+    }
+}
