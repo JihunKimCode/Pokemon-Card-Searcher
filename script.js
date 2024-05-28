@@ -13,6 +13,25 @@ document.getElementById('searchQuery').addEventListener('keypress', function(eve
 document.getElementById('sortOrder').addEventListener('change', fetchCards);
 document.getElementById('rarityFilter').addEventListener('change', fetchCards);
 
+// Clear Button
+const clearButton = document.getElementById('clearButton');
+
+function clearSearchQuery() {
+    document.getElementById("searchQuery").value = "";
+    clearButton.style.display = 'none';
+}
+// Function to check search query and toggle clear button visibility
+function toggleClearButton() {
+    var searchQueryValue = document.getElementById("searchQuery").value;
+    var clearButton = document.getElementById("clearButton");
+
+    if (searchQueryValue.trim() !== "") {
+        clearButton.style.display = "block";
+    } else {
+        clearButton.style.display = "none";
+    }
+}
+
 // Search options buttons
 const pokemonNameBtn = document.getElementById('pokemonNameBtn');
 const artistNameBtn = document.getElementById('artistNameBtn');
@@ -66,6 +85,7 @@ const rarityOrder = {
     "Promo": 9,
 };
 
+// Add Rarity after search
 function populateRarityOptions(cards) {
     const rarities = new Set(cards.map(card => card.rarity).filter(rarity => rarity));
     const rarityFilter = document.getElementById('rarityFilter');
@@ -177,6 +197,7 @@ function fetchCards() {
         });
 }
 
+// Show popup image when image was clicked
 function showPopup(image, name) {
     const popup = document.getElementById('popup');
     const popupImage = document.getElementById('popupImage');

@@ -28,16 +28,19 @@
                     <option value="">Filter by Rarity</option>
                 </select>    
                 <select id="sortOrder">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="highRarity">High Rarity First</option>
-                    <option value="lowRarity">Low Rarity First</option>
-                    <option value="highPrice">High Price First</option>
-                    <option value="lowPrice">Low Price First</option>
+                    <option value="newest">Newer First</option>
+                    <option value="oldest">Older First</option>
+                    <option value="highRarity">Higher Rarity First</option>
+                    <option value="lowRarity">Lower Rarity First</option>
+                    <option value="highPrice">Higher Price First</option>
+                    <option value="lowPrice">Lower Price First</option>
                 </select>
             </div>
             <div class="searcher">
-                <input type="text" id="searchQuery" placeholder="Enter Card name">
+                <div class="search-input-container">
+                    <input type="text" id="searchQuery" placeholder="Enter Card name" oninput="toggleClearButton()">
+                    <button id="clearButton" onclick="clearSearchQuery()"><i class="fa fa-times"></i></button>
+                </div>
                 <button id="fetchButton"><i class="fa fa-search"></i></button>
             </div>
         </div>
