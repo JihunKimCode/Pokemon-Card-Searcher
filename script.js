@@ -96,20 +96,39 @@ const rarityOrder = {
     "Promo": 9,
 };
 
-// Add Rarity after search
 function populateRarityOptions(cards) {
     const rarities = new Set(cards.map(card => card.rarity).filter(rarity => rarity));
     const rarityFilter = document.getElementById('rarityFilter');
-    const existingOptions = new Set(Array.from(rarityFilter.options).map(option => option.value));
+    const existingOptions = Array.from(rarityFilter.options);
+    const existingRarities = new Set(existingOptions.map(option => option.value).filter(value => value));
+    
+    // Get the current selected value
+    const currentSelectedValue = rarityFilter.value;
 
+    // Remove options that are no longer needed
+    existingOptions.forEach(option => {
+        if (option.value && !rarities.has(option.value)) {
+            rarityFilter.removeChild(option);
+        }
+    });
+
+    // Add new rarity options if not already present
     rarities.forEach(rarity => {
-        if (!existingOptions.has(rarity)) {
+        if (!existingRarities.has(rarity)) {
             const option = document.createElement('option');
             option.value = rarity;
             option.textContent = rarity;
             rarityFilter.appendChild(option);
         }
     });
+
+    // If current value is not in the new list of rarities, set it to default
+    if (currentSelectedValue && !rarities.has(currentSelectedValue)) {
+        rarityFilter.value = "";
+        fetchCards();
+    } else {
+        rarityFilter.value = currentSelectedValue;
+    }
 }
 
 // Get price of the card
