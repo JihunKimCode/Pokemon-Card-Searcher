@@ -120,7 +120,7 @@ h1 a{
     font-weight: bold;
     margin-right: 6px;
     overflow: hidden;
-    width: 135px;
+    width: 125px;
 
     transition: height .4s ease;
 }
@@ -150,7 +150,7 @@ h1 a{
     padding: 6px;
     font-size: 17px;
     border: none;
-    width: 225px;
+    width: 160px;
     border-top: 2px solid var(--border);
     border-left: 2px solid var(--border);
     border-bottom: 2px solid var(--border);  
@@ -390,7 +390,21 @@ footer a:hover{
     background-color: var(--gray-hover);
 }
 
-@media only screen and (max-width: 1024px) {
+@media (min-width: 767px) and (max-width: 955px) {
+    h1{
+        width: 30%;
+        font-size: 28px;
+    }
+    .searchTools{
+        width: 70%
+    }
+    .filter-container{
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media only screen and (max-width: 767px) {
     .header {
         flex-direction: column;
         align-items: flex-start;
