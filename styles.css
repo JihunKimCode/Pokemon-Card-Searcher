@@ -150,7 +150,7 @@ h1 a{
     padding: 6px;
     font-size: 17px;
     border: none;
-    width: 220px;
+    width: 228px;
     border-top: 2px solid var(--border);
     border-left: 2px solid var(--border);
     border-bottom: 2px solid var(--border);  
@@ -269,7 +269,8 @@ h1 a{
 }
 
 .card p{
-    margin-block-end: 0em;
+    margin-block-start: 7px;
+    margin-block-end: 3px;
     color: var(--text);
 }
 
