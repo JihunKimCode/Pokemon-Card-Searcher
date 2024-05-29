@@ -39,15 +39,15 @@ const setListBtn = document.getElementById('setListBtn');
 
 pokemonNameBtn.addEventListener('click', function() {
     setActiveButton(pokemonNameBtn);
-    setSearchPlaceholder("Enter Card name");
+    setSearchPlaceholder("Enter Card Name");
 });
 artistNameBtn.addEventListener('click', function() {
     setActiveButton(artistNameBtn);
-    setSearchPlaceholder("Enter Artist name");
+    setSearchPlaceholder("Enter Artist Name");
 });
 setListBtn.addEventListener('click', function() {
     setActiveButton(setListBtn);
-    setSearchPlaceholder("Enter Set List");
+    setSearchPlaceholder("Enter Expansion Name");
 });
 
 const rarityOrder = {
