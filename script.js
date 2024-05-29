@@ -179,7 +179,7 @@ function fetchCards() {
             sortedData.forEach(card => {
                 outputDiv.innerHTML += `
                     <div class="card">
-                        <img src="${card.images.small}" alt="${card.name}" onclick="showPopup('${card.images.large}', '${card.name}')" style="cursor: zoom-in">
+                        <img src="${card.images.small}" alt="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
                         <img src="${card.set.images.logo}" alt="${card.name}" style="width: 100px; cursor: default">
                         <p><b>${card.set.name}</b></p>
                         <p>${card.set.releaseDate || 'N/A'}</p>
