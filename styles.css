@@ -344,7 +344,7 @@ footer a:hover{
 }
 
 .footicons{
-    font-size: 28px;
+    font-size: 31px;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -458,5 +458,9 @@ footer a:hover{
     footer {
         font-size: 12px;
         padding-left: 10px;
+    }    
+    
+    .footicons{
+        font-size: 28px;
     }    
 }
