@@ -186,11 +186,6 @@ h1 a{
     justify-items: center;
 }
 
-h3{
-    height: 50px;
-    margin-block-start: 0em;
-}
-
 .card {
     border: none;
     border-radius: 5px;
