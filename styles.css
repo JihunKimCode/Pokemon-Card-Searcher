@@ -1,6 +1,45 @@
+:root{
+    --background: #fff;
+    --text: #000;
+    --border: #000;
+    --button: #000;
+    --button-icon: #fff;
+    --footer: #ccc;
+    --gray-hover: #e2e2e2;
+    --gray: #ccc;
+    --light-gray: #f0f0f0;
+    --white: #fff;
+    --black: #000;
+    --popup: rgba(0, 0, 0, 0.7);
+    --error: red;
+    --dark-gray: #aaa;
+    --clear-button-hover: rgba(169, 169, 169, 0.5);
+    --clear-button-active: rgba(169, 169, 169, 0.7);
+}
+
+.dark-mode {
+    --background: #121212;
+    --text: #fff;
+    --border: #c2c2c2;
+    --button: #fff;
+    --button-icon: #000;
+    --footer: #a6a6a6;
+    --gray-hover: #e2e2e2;
+    --gray: #ccc;
+    --light-gray: #f0f0f0;
+    --white: #fff;
+    --black: #000;
+    --popup: rgba(0, 0, 0, 0.7);
+    --error: red;
+    --dark-gray: #aaa;
+    --clear-button-hover: rgba(169, 169, 169, 0.5);
+    --clear-button-active: rgba(169, 169, 169, 0.7);
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0px;
+    background-color: var(--background);
 }
 
 .header {
@@ -27,13 +66,13 @@ body {
 
 /* Scroll Bar Handle */
 ::-webkit-scrollbar-thumb {
-    background: #ccc;  
+    background: var(--footer);  
     border-radius: 20px;
 }
 
 /* Scroll Bar Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #e2e2e2;  
+    background: var(--gray-hover);  
 }
 
 h1 {
@@ -41,7 +80,7 @@ h1 {
 }
 
 h1 a{
-    color: black;
+    color: var(--text);
     text-decoration: none;
 }
 
@@ -51,29 +90,29 @@ h1 a{
     align-items: center;
     justify-content: center;
     padding: 6px;
-    color: #e2e2e2;
+    color: var(--button-icon);
     border: none;
     border-radius: 4px;
     text-decoration: none;
     cursor: pointer;
 }
 
-.btn.btn-github {
-    background-color: #000000;
+.btn.btn-github, .btn.btn-dark {
+    background-color: var(--button);
 }
 
-.btn.btn-github:hover {
-    color: #fff;
+.btn.btn-github:hover, .btn.btn-dark:hover {
+    color: var(--gray);
 }
 
 #sortOrder, #rarityFilter{
-    padding: 5px;    
-    background: #fff;
-    color: #000;
+    padding: 7px;    
+    background: var(--white);
+    color: var(--black);
     border-radius: 5px;
     border-style: solid;
     border-width: 2px;
-    border-color: black;
+    border-color: var(--border);
     box-sizing: border-box;
     cursor: pointer;
     font-family: 'NanumB', sans-serif;
@@ -111,8 +150,12 @@ h1 a{
     padding: 6px;
     font-size: 17px;
     border: none;
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
     width: 220px;
+    border-top: 2px solid var(--border);
+    border-left: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);  
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 #fetchButton {
@@ -120,12 +163,20 @@ h1 a{
     float: right;
     padding: 6px 0px;
     margin-right: 0px;
-    background: var(--pokemoncolor, #ccc);
+    background: var(--gray);
     font-size: 17px;
     border: none;
     cursor: pointer;
-    color: white;
-    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
+    color: var(--white);
+    border-top: 2px solid var(--border);
+    border-right: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);  
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#fetchButton:hover{
+    background-color: var(--dark-gray);
 }
 
 .search-options {
@@ -137,7 +188,7 @@ h1 a{
 .search-options button {
     padding: 5px 10px;
     border: none;
-    background-color: #f0f0f0;
+    background-color: var(--light-gray);
     border-radius: 5px;
     cursor: pointer;
 }
@@ -148,12 +199,9 @@ h1 a{
 }
 
 .search-options button.active {
-    background-color: #ccc;
+    background-color: var(--gray);
 }
 
-.searcher button:hover{
-    background-color: #aaaaaa;
-}
 
 .searcher {
     position: relative;
@@ -171,7 +219,6 @@ h1 a{
     text-align: center;
     line-height: 20px;
     background-color: transparent;
-    color: #333;
 
     position: absolute;
     top: 50%;
@@ -180,17 +227,17 @@ h1 a{
     padding: 0;
     cursor: pointer;
     border: none;
-    border-radius: 50%; /* Make it a circle */
+    border-radius: 50%;
 }
 
 #clearButton:hover {
-    background-color: rgba(169, 169, 169, 0.5);
-    border-radius: 50%; /* Make it a circle */
+    background-color: var(--clear-button-hover);
+    border-radius: 50%;
     transition: background-color 0.3s ease;
 }
 
 #clearButton:active {
-    background-color: rgba(169, 169, 169, 0.7);
+    background-color: var(--clear-button-active);
     transition: background-color 0.3s ease;
 }
 
@@ -210,8 +257,7 @@ h1 a{
 .card {
     border: none;
     border-radius: 5px;
-    /* padding: 10px; */
-    background-color: #fff;
+    background-color: var(--background);
     text-align: center;
     width: 200px;
 }
@@ -224,10 +270,11 @@ h1 a{
 
 .card p{
     margin-block-end: 0em;
+    color: var(--text);
 }
 
 .error {
-    color: red;
+    color: var(--error);
 }
 
 /* Popup Styles */
@@ -238,7 +285,7 @@ h1 a{
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--popup);
     z-index: 9999;
     overflow: auto;
 }
@@ -256,7 +303,7 @@ h1 a{
 
 #caption {
     display: block;
-    color: white;
+    color: var(--white);
     text-align: center;
     margin-top: 20px;
 }
@@ -265,7 +312,7 @@ h1 a{
     position: absolute;
     top: 10px;
     right: 15px;
-    color: #ffffff;
+    color: var(--white);
     font-size: 30px;
     font-weight: bold;
     cursor: pointer;
@@ -273,31 +320,45 @@ h1 a{
 }
 
 .close:hover {
-    color: #aaaaaa;
+    color: var(--gray);
 }
 
 footer {
-    background-color: #ccc;
-    color: white;
+    font-size: 16px;
+    background-color: var(--footer);
+    color: var(--white);
     text-align: left;
     margin: 15px 0px 0px 0px;
+    padding-left: 20px;
+    padding-right: 10px;
 }
 
 footer a{
-    color: white;
+    color: var(--white);
     text-decoration: underline;
 }
 
 footer a:hover{
-    color: #e2e2e2;
+    color: var(--gray-hover);
+}
+
+.footicons{
+    font-size: 28px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    color: var(--white);
+}
+
+.footicons .btn {
+    margin-right: 10px;
 }
 
 .footerContent{
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin: 0 auto;
-    padding: 0 20px;
 }
 
 #scrollTop{
@@ -305,7 +366,7 @@ footer a:hover{
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 #scrollTopBtn {
@@ -316,8 +377,8 @@ footer a:hover{
     z-index: 99;
     border: none;
     outline: none;
-    background-color: #ccc;
-    color: white;
+    background-color: var(--footer);
+    color: var(--white);
     cursor: pointer;
     padding: 10px;
     border-radius: 10px;
@@ -325,7 +386,7 @@ footer a:hover{
 }
 
 #scrollTopBtn:hover {
-    background-color: #e2e2e2;
+    background-color: var(--gray-hover);
 }
 
 @media only screen and (max-width: 1024px) {
@@ -392,4 +453,9 @@ footer a:hover{
     h3{
         height: 30px;
     }
+
+    footer {
+        font-size: 12px;
+        padding-left: 10px;
+    }    
 }

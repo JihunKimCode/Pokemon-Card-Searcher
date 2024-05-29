@@ -3,7 +3,16 @@ var currentYear = new Date().getFullYear();
 document.getElementById("year").innerHTML = currentYear;
 document.getElementById("year2").innerHTML = currentYear;
 
-// Search button
+function darkmode() {
+    // Toggle the dark mode class on the body
+    document.body.classList.toggle("dark-mode");
+
+    // Check if dark mode is enabled and store the state in localStorage
+    var isDarkModeEnabled = document.body.classList.contains("dark-mode");
+    localStorage.setItem("darkMode", isDarkModeEnabled);
+}
+
+// Search Button
 document.getElementById('fetchButton').addEventListener('click', fetchCards);
 document.getElementById('searchQuery').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
