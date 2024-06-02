@@ -6,5 +6,5 @@ A simple webpage for those particularly interested in the Pokemon TCG illustrati
 - Search Card(Pokemon/Trainer/Energy), Artist, and Expansions!
 - Filter by Rarity
 - Sorting
-  - By Release Date, by Rarity, and by Price
+  - By Alphabetically, by Release Date, by Rarity, and by Price
 - Dark Mode

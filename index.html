@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Website Thumbnail -->
     <title>Pokémon Card Searcher</title>
     <meta property="og:url" content="https://jihunkimcode.github.io/Pokemon-Card-Searcher/">
     <meta property="og:title" content="Pokémon Card Searcher">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/dream-world/red-card.png">
     <meta property="og:description" content="A webpage for those who are particularly interested in illustrations from the Pokemon TCG">
-
-    <!-- Website Information -->
     <meta name="author" content="Jihun Kim">
     <meta name="keywords" content="Pokémon, Pokémon Card, Pokémon Card Illustrations">
     <meta name="description" content="Illustrations of Pokémon Cards">
-    
-    <!-- Website Settings -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
@@ -25,7 +20,7 @@
 
 <div class="header">
     <h1>
-        <a href="https://github.com/JihunKimCode/Pokemon-Card-Searcher" class="btn btn-github" rel="noopener noreferrer">
+        <a href="https://github.com/JihunKimCode/Pokemon-Card-Searcher" class="btn btn-github" rel="noopener noreferrer" aria-label="GitHub Repository">
             <i class="fa-brands fa-github"></i>
         </a>
         <a href="index.html">Pokémon Card Searcher</a>
@@ -39,23 +34,25 @@
         <div class="filter-container">
             <div class="options">
                 <select id="rarityFilter">
-                    <option value="">Filter by Rarity</option>
+                    <option value="" disabled selected>Filter by Rarity</option>
                 </select>    
                 <select id="sortOrder">
-                    <option value="newest">Newer First</option>
-                    <option value="oldest">Older First</option>
-                    <option value="highRarity">Higher Rarity First</option>
-                    <option value="lowRarity">Lower Rarity First</option>
-                    <option value="highPrice">Higher Price First</option>
-                    <option value="lowPrice">Lower Price First</option>
-                </select>
+                    <option value="AtoZ">A to Z</option>
+                    <option value="ZtoA">Z to A</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="newest">Newest</option>
+                    <option value="highRarity">Highest Rarity</option>
+                    <option value="lowRarity">Lowest Rarity</option>
+                    <option value="highPrice">Highest Price</option>
+                    <option value="lowPrice">Lowest Price</option>
+                </select>                
             </div>
             <div class="searcher">
                 <div class="search-input-container">
-                    <input type="text" id="searchQuery" placeholder="Enter Card Name" oninput="toggleClearButton()">
-                    <button id="clearButton" onclick="clearSearchQuery()"><i class="fa fa-times"></i></button>
+                    <input type="text" id="searchQuery" placeholder="Enter Card Name" oninput="toggleClearButton()" aria-label="Search Card Name">
+                    <button id="clearButton" onclick="clearSearchQuery()" aria-label="Clear Search"><i class="fa fa-times"></i></button>
                 </div>
-                <button id="fetchButton"><i class="fa fa-search"></i></button>
+                <button id="fetchButton" aria-label="Search"><i class="fa fa-search"></i></button>
             </div>
         </div>
     </div>
@@ -65,7 +62,7 @@
 
 <div id="popup" class="popup">
     <span class="close">&times;</span>
-    <img class="popup-content" id="popupImage">
+    <img class="popup-content" id="popupImage" alt="Popup Image">
     <div id="caption"></div>
 </div>
 <button id="scrollTopBtn" title="Go to top"><i class="fa-solid fa-chevron-up"></i></button>
@@ -73,7 +70,7 @@
 <footer>
     <div class="footerContent">
         <div class="footicons">
-            <a class="btn btn-dark" onclick="darkmode()">
+            <a class="btn btn-dark" onclick="darkmode()" aria-label="Toggle Dark Mode">
                 <i class="fa-solid fa-circle-half-stroke"></i>
             </a>
         </div>
