@@ -129,18 +129,21 @@ function getPrice(card) {
 // Fetch cards based on the query and filters
 let cachedData = [];
 let currentQuery = '';
+let currentSearchMode = '';
 
 function fetchCards() {
     const query = document.getElementById('searchQuery').value.trim();
+    const searchMode = document.getElementById('searchQuery').placeholder;
     if (!query) {
         alert('Please enter a search query.');
         return;
     }
 
-    if (query !== currentQuery) {
+    if (query !== currentQuery || !cachedData || cachedData.length === 0 || searchMode !== currentSearchMode) {
         // If the query has changed, fetch new data
         currentQuery = query;
         cachedData = [];
+        currentSearchMode = document.getElementById('searchQuery').placeholder;
 
         // Determine the search type based on the active button
         let url;
@@ -198,12 +201,16 @@ function updateDisplay() {
     sortedData.forEach(card => {
         outputDiv.innerHTML += `
             <div class="card">
-                <img src="${card.images.small}" alt="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
-                <img src="${card.set.images.logo}" alt="${card.name}" style="width: 100px; cursor: default">
-                <p><b>${card.set.name}</b></p>
+                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+                <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
+                <p><b>${card.name}</b></p>
                 <p>${card.set.releaseDate || 'N/A'}</p>
                 <p>${card.rarity || 'N/A'}</p>
-                <p>Avg $${getPrice(card) || 'N/A'}</p>
+                <p>
+                    ${card.tcgplayer && card.tcgplayer.url 
+                    ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` 
+                    : `Avg $${getPrice(card) || 'N/A'}`}
+                </p>
             </div>
         `;
     });
@@ -240,11 +247,9 @@ function sortCards(data, sortOrder) {
 function showPopup(image, name) {
     const popup = document.getElementById('popup');
     const popupImage = document.getElementById('popupImage');
-    const caption = document.getElementById('caption');
 
     popup.style.display = "block";
     popupImage.src = image;
-    caption.innerText = name;
     document.body.style.overflow = "hidden";
 
     const close = document.getElementsByClassName('close')[0];
