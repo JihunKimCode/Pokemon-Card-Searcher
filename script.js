@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchCards();
         }
     });
-    document.getElementById('sortOrder').addEventListener('change', fetchCards);
-    document.getElementById('rarityFilter').addEventListener('change', fetchCards);
+    document.getElementById('sortOrder').addEventListener('change', updateDisplay);
+    document.getElementById('rarityFilter').addEventListener('change', updateDisplay);
     document.getElementById('clearButton').addEventListener('click', clearSearchQuery);
 
     // Search options buttons
@@ -108,7 +108,7 @@ function populateRarityOptions(cards) {
     // If current value is not in the new list of rarities, set it to default
     if (currentSelectedValue && !rarities.has(currentSelectedValue)) {
         rarityFilter.value = "";
-        fetchCards();
+        updateDisplay();
     } else {
         rarityFilter.value = currentSelectedValue;
     }
@@ -127,68 +127,86 @@ function getPrice(card) {
 }
 
 // Fetch cards based on the query and filters
+let cachedData = [];
+let currentQuery = '';
+
 function fetchCards() {
     const query = document.getElementById('searchQuery').value.trim();
-    const sortOrder = document.getElementById('sortOrder').value;
-    const rarityFilter = document.getElementById('rarityFilter').value;
     if (!query) {
         alert('Please enter a search query.');
         return;
     }
 
-    // Determine the search type based on the active button
-    let url;
-    if (document.getElementById('pokemonNameBtn').classList.contains('active')) {
-        url = `https://api.pokemontcg.io/v2/cards?q=name:${query}`;
-    } else if (document.getElementById('artistNameBtn').classList.contains('active')) {
-        url = `https://api.pokemontcg.io/v2/cards?q=artist:${query}`;
-    } else if (document.getElementById('setListBtn').classList.contains('active')) {
-        url = `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
+    if (query !== currentQuery) {
+        // If the query has changed, fetch new data
+        currentQuery = query;
+        cachedData = [];
+
+        // Determine the search type based on the active button
+        let url;
+        if (document.getElementById('pokemonNameBtn').classList.contains('active')) {
+            url = `https://api.pokemontcg.io/v2/cards?q=name:${query}`;
+        } else if (document.getElementById('artistNameBtn').classList.contains('active')) {
+            url = `https://api.pokemontcg.io/v2/cards?q=artist:${query}`;
+        } else if (document.getElementById('setListBtn').classList.contains('active')) {
+            url = `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
+        }
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                cachedData = data.data;
+                populateRarityOptions(cachedData);
+                updateDisplay();
+            })
+            .catch(error => {
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+    } else {
+        // If the query hasn't changed, just update the display
+        updateDisplay();
+    }
+}
+
+// Update the display based on the filters and sorting
+function updateDisplay() {
+    const sortOrder = document.getElementById('sortOrder').value;
+    const rarityFilter = document.getElementById('rarityFilter').value;
+
+    let filteredData = cachedData;
+    if (rarityFilter) {
+        filteredData = filteredData.filter(card => card.rarity === rarityFilter);
     }
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = '';
+    const sortedData = sortCards(filteredData, sortOrder);
 
-            if (data.data.length === 0) {
-                outputDiv.innerHTML = '<p class="error">No cards found for this query.</p>';
-                return;
-            }
+    const outputDiv = document.getElementById('output');
+    outputDiv.innerHTML = '';
 
-            populateRarityOptions(data.data);
+    if (sortedData.length === 0) {
+        outputDiv.innerHTML = '<p class="error">No cards found for this query.</p>';
+        return;
+    }
 
-            let filteredData = data.data;
-            if (rarityFilter) {
-                filteredData = filteredData.filter(card => card.rarity === rarityFilter);
-            }
-
-            const sortedData = sortCards(filteredData, sortOrder);
-
-            sortedData.forEach(card => {
-                outputDiv.innerHTML += `
-                    <div class="card">
-                        <img src="${card.images.small}" alt="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
-                        <img src="${card.set.images.logo}" alt="${card.name}" style="width: 100px; cursor: default">
-                        <p><b>${card.set.name}</b></p>
-                        <p>${card.set.releaseDate || 'N/A'}</p>
-                        <p>${card.rarity || 'N/A'}</p>
-                        <p>Avg $${getPrice(card) || 'N/A'}</p>
-                    </div>
-                `;
-            });
-        })
-        .catch(error => {
-            const outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
-            console.error('There has been a problem with your fetch operation:', error);
-        });
+    sortedData.forEach(card => {
+        outputDiv.innerHTML += `
+            <div class="card">
+                <img src="${card.images.small}" alt="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+                <img src="${card.set.images.logo}" alt="${card.name}" style="width: 100px; cursor: default">
+                <p><b>${card.set.name}</b></p>
+                <p>${card.set.releaseDate || 'N/A'}</p>
+                <p>${card.rarity || 'N/A'}</p>
+                <p>Avg $${getPrice(card) || 'N/A'}</p>
+            </div>
+        `;
+    });
 }
 
 // Sort cards based on selected criteria
