@@ -132,12 +132,15 @@ let currentQuery = '';
 let currentSearchMode = '';
 
 function fetchCards() {
-    const query = document.getElementById('searchQuery').value.trim();
+    let query = document.getElementById('searchQuery').value.trim();
     const searchMode = document.getElementById('searchQuery').placeholder;
     if (!query) {
         alert('Please enter a search query.');
         return;
     }
+
+    // Convert spaces to dots if necessary
+    query = query.replace(/ /g, '.');
 
     if (query !== currentQuery || !cachedData || cachedData.length === 0 || searchMode !== currentSearchMode) {
         // If the query has changed, fetch new data
