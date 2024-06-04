@@ -155,7 +155,8 @@ function fetchCards() {
         } else if (document.getElementById('artistNameBtn').classList.contains('active')) {
             url = `https://api.pokemontcg.io/v2/cards?q=artist:${query}`;
         } else if (document.getElementById('setListBtn').classList.contains('active')) {
-            url = `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
+            if(query == "151") url = `https://api.pokemontcg.io/v2/cards?q=set.id:sv3pt5`;
+            else url = `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
         }
 
         fetch(url)
