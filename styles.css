@@ -378,8 +378,8 @@ footer a:hover{
 #scrollTopBtn {
     display: none;
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px;
+    right: 15px;
     z-index: 99;
     border: none;
     outline: none;
