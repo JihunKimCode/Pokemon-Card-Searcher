@@ -83,31 +83,31 @@ function setSearchPlaceholder(placeholderText) {
 function populateRarityOptions(cards) {
     const rarities = new Set(cards.map(card => card.rarity).filter(rarity => rarity));
     const rarityFilter = document.getElementById('rarityFilter');
-    const existingOptions = Array.from(rarityFilter.options);
-    const existingRarities = new Set(existingOptions.map(option => option.value).filter(value => value));
-
     const currentSelectedValue = rarityFilter.value;
 
-    // Remove options that are no longer needed
-    existingOptions.forEach(option => {
-        if (option.value && !rarities.has(option.value)) {
-            rarityFilter.removeChild(option);
-        }
-    });
+    // Clear all existing options
+    rarityFilter.innerHTML = '';
 
-    // Add new rarity options if not already present
-    rarities.forEach(rarity => {
-        if (!existingRarities.has(rarity)) {
-            const option = document.createElement('option');
-            option.value = rarity;
-            option.textContent = rarity;
-            rarityFilter.appendChild(option);
-        }
+    // Add a default empty option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Filter by Rarity';
+    rarityFilter.appendChild(defaultOption);
+
+    // Sort rarities using the custom order
+    const sortedRarities = Array.from(rarities).sort((a, b) => (rarityOrder[a] || 0) - (rarityOrder[b] || 0));
+
+    // Add new rarity options
+    sortedRarities.forEach(rarity => {
+        const option = document.createElement('option');
+        option.value = rarity;
+        option.textContent = rarity;
+        rarityFilter.appendChild(option);
     });
 
     // If current value is not in the new list of rarities, set it to default
     if (currentSelectedValue && !rarities.has(currentSelectedValue)) {
-        rarityFilter.value = "";
+        rarityFilter.value = '';
         updateDisplay();
     } else {
         rarityFilter.value = currentSelectedValue;
@@ -316,4 +316,5 @@ const rarityOrder = {
     "Special Illustration Rare": 8,
     "Hyper Rare": 9,
     "Promo": 9,
+    "Classic Collection": 9
 };
