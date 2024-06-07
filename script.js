@@ -67,7 +67,6 @@ function darkmode() {
 function clearSearchQuery() {
     document.getElementById("searchQuery").value = "";
     toggleClearButton();
-    updateDisplay();
 }
 
 function toggleClearButton() {
