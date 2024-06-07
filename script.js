@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Year in Footer
     const currentYear = new Date().getFullYear();
-    document.getElementById("year").innerHTML = currentYear;
-    document.getElementById("year2").innerHTML = currentYear;
+    document.querySelectorAll("#year, #year2").forEach(el => el.textContent = currentYear);
 
     // Dark Mode Initialization
     if (localStorage.getItem("darkMode") === "true") {
@@ -10,15 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event Listeners
-    document.getElementById('fetchButton').addEventListener('click', fetchCards);
-    document.getElementById('searchQuery').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            fetchCards();
-        }
-    });
-    document.getElementById('sortOrder').addEventListener('change', updateDisplay);
-    document.getElementById('rarityFilter').addEventListener('change', updateDisplay);
-    document.getElementById('clearButton').addEventListener('click', clearSearchQuery);
+    const fetchButton = document.getElementById('fetchButton');
+    const searchQuery = document.getElementById('searchQuery');
+    const sortOrder = document.getElementById('sortOrder');
+    const rarityFilter = document.getElementById('rarityFilter');
+    const clearButton = document.getElementById('clearButton');
+
+    fetchButton.addEventListener('click', fetchCards);
+    searchQuery.addEventListener('keypress', event => event.key === 'Enter' && fetchCards());
+    sortOrder.addEventListener('change', updateDisplay);
+    rarityFilter.addEventListener('change', updateDisplay);
+    clearButton.addEventListener('click', clearSearchQuery);
 
     // Search options buttons
     const pokemonNameBtn = document.getElementById('pokemonNameBtn');
@@ -40,36 +41,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Scroll to Top button
     const scrollTopBtn = document.getElementById("scrollTopBtn");
-    window.onscroll = scrollFunction;
+    window.addEventListener('scroll', () => {
+        scrollTopBtn.style.display = (document.documentElement.scrollTop > 20) ? "block" : "none";
+    });
     scrollTopBtn.addEventListener('click', () => {
         document.documentElement.scrollIntoView({ behavior: 'smooth' });
     });
 
     // Initialize clear button visibility
     toggleClearButton();
+
+    // Toggle Dark Mode
+    document.body.addEventListener('click', event => {
+        if (event.target.matches('.dark-mode-toggle')) {
+            darkmode();
+        }
+    });
 });
 
-// Toggle Dark Mode
 function darkmode() {
     document.body.classList.toggle("dark-mode");
     localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
 }
 
-// Clear search query
 function clearSearchQuery() {
-    const searchQuery = document.getElementById("searchQuery");
-    searchQuery.value = "";
+    document.getElementById("searchQuery").value = "";
     toggleClearButton();
+    updateDisplay();
 }
 
-// Toggle clear button visibility
 function toggleClearButton() {
     const searchQueryValue = document.getElementById("searchQuery").value.trim();
     const clearButton = document.getElementById("clearButton");
     clearButton.style.display = searchQueryValue ? "block" : "none";
 }
 
-// Set the active button and placeholder
 function setActiveButton(activeButton) {
     document.querySelectorAll('.search-options button').forEach(button => button.classList.remove('active'));
     activeButton.classList.add('active');
@@ -79,25 +85,14 @@ function setSearchPlaceholder(placeholderText) {
     document.getElementById('searchQuery').placeholder = placeholderText;
 }
 
-// Populate rarity options in the dropdown
 function populateRarityOptions(cards) {
-    const rarities = new Set(cards.map(card => card.rarity).filter(rarity => rarity));
+    const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean)));
     const rarityFilter = document.getElementById('rarityFilter');
     const currentSelectedValue = rarityFilter.value;
 
-    // Clear all existing options
-    rarityFilter.innerHTML = '';
+    rarityFilter.innerHTML = '<option value="">Filter by Rarity</option>';
 
-    // Add a default empty option
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.textContent = 'Filter by Rarity';
-    rarityFilter.appendChild(defaultOption);
-
-    // Sort rarities using the custom order
-    const sortedRarities = Array.from(rarities).sort((a, b) => (rarityOrder[a] || 0) - (rarityOrder[b] || 0));
-
-    // Add new rarity options
+    const sortedRarities = rarities.sort((a, b) => (rarityOrder[a] || 0) - (rarityOrder[b] || 0));
     sortedRarities.forEach(rarity => {
         const option = document.createElement('option');
         option.value = rarity;
@@ -105,84 +100,64 @@ function populateRarityOptions(cards) {
         rarityFilter.appendChild(option);
     });
 
-    // If current value is not in the new list of rarities, set it to default
-    if (currentSelectedValue && !rarities.has(currentSelectedValue)) {
-        rarityFilter.value = '';
-        updateDisplay();
-    } else {
-        rarityFilter.value = currentSelectedValue;
-    }
+    rarityFilter.value = rarities.includes(currentSelectedValue) ? currentSelectedValue : '';
+    updateDisplay();
 }
 
-// Get price of the card
 function getPrice(card) {
     const priceAttributes = ['unlimited', '1stEdition', 'unlimitedHolofoil', '1stEditionHolofoil', 'normal', 'holofoil', 'reverseHolofoil'];
     for (const attr of priceAttributes) {
         const price = card.tcgplayer?.prices?.[attr]?.mid;
-        if (price !== undefined) {
-            return price;
-        }
+        if (price !== undefined) return price;
     }
     return undefined;
 }
 
-// Fetch cards based on the query and filters
 let cachedData = [];
 let currentQuery = '';
 let currentSearchMode = '';
 
-function fetchCards() {
-    let query = document.getElementById('searchQuery').value.trim();
-    const searchMode = document.getElementById('searchQuery').placeholder;
-    if (!query) {
+async function fetchCards() {
+    const queryInput = document.getElementById('searchQuery').value.trim();
+    if (!queryInput) {
         alert('Please enter a search query.');
         return;
     }
 
-    // Convert spaces to dots if necessary
-    query = query.replace(/ /g, '.');
+    const query = queryInput.replace(/ /g, '.');
+    const searchMode = document.getElementById('searchQuery').placeholder;
 
-    if (query !== currentQuery || !cachedData || cachedData.length === 0 || searchMode !== currentSearchMode) {
-        // If the query has changed, fetch new data
+    if (query !== currentQuery || searchMode !== currentSearchMode) {
         currentQuery = query;
+        currentSearchMode = searchMode;
         cachedData = [];
-        currentSearchMode = document.getElementById('searchQuery').placeholder;
 
-        // Determine the search type based on the active button
         let url;
         if (document.getElementById('pokemonNameBtn').classList.contains('active')) {
             url = `https://api.pokemontcg.io/v2/cards?q=name:${query}`;
         } else if (document.getElementById('artistNameBtn').classList.contains('active')) {
             url = `https://api.pokemontcg.io/v2/cards?q=artist:${query}`;
         } else if (document.getElementById('setListBtn').classList.contains('active')) {
-            if(query == "151") url = `https://api.pokemontcg.io/v2/cards?q=set.id:sv3pt5`;
-            else url = `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
+            url = query === "151" ? `https://api.pokemontcg.io/v2/cards?q=set.id:sv3pt5` : `https://api.pokemontcg.io/v2/cards?q=set.name:${query}`;
         }
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                cachedData = data.data;
-                populateRarityOptions(cachedData);
-                updateDisplay();
-            })
-            .catch(error => {
-                const outputDiv = document.getElementById('output');
-                outputDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+
+            const data = await response.json();
+            cachedData = data.data;
+            populateRarityOptions(cachedData);
+            updateDisplay();
+        } catch (error) {
+            document.getElementById('output').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            console.error('There has been a problem with your fetch operation:', error);
+        }
     } else {
-        // If the query hasn't changed, just update the display
         updateDisplay();
     }
 }
 
-// Update the display based on the filters and sorting
 function updateDisplay() {
     const sortOrder = document.getElementById('sortOrder').value;
     const rarityFilter = document.getElementById('rarityFilter').value;
@@ -193,61 +168,41 @@ function updateDisplay() {
     }
 
     const sortedData = sortCards(filteredData, sortOrder);
-
     const outputDiv = document.getElementById('output');
-    outputDiv.innerHTML = '';
-
-    if (sortedData.length === 0) {
-        outputDiv.innerHTML = '<p class="error">No cards found for this query.</p>';
-        return;
-    }
-
-    sortedData.forEach(card => {
-        outputDiv.innerHTML += `
-            <div class="card">
-                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
-                <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
-                <p><b>${card.name}</b></p>
-                <p>${card.set.releaseDate || 'N/A'}</p>
-                <p>${card.rarity || 'N/A'}</p>
-                <p>
-                    ${card.tcgplayer && card.tcgplayer.url 
-                    ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` 
-                    : `Avg $${getPrice(card) || 'N/A'}`}
-                </p>
-            </div>
-        `;
-    });
+    outputDiv.innerHTML = sortedData.length ? sortedData.map(card => `
+        <div class="card">
+            <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+            <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
+            <p><b>${card.name}</b></p>
+            <p>${card.set.releaseDate || 'N/A'}</p>
+            <p>${card.rarity || 'N/A'}</p>
+            <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>
+        </div>`).join('') : '<p class="error">No cards found for this query.</p>';
 }
 
-// Sort cards based on selected criteria
 function sortCards(data, sortOrder) {
     return data.sort((a, b) => {
-        if (sortOrder === 'oldest' || sortOrder === 'newest') {
-            const dateA = new Date(a.set.releaseDate);
-            const dateB = new Date(b.set.releaseDate);
-            return sortOrder === 'oldest' ? dateA - dateB : dateB - dateA;
-        } else if (sortOrder === 'highRarity') {
-            return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
-        } else if (sortOrder === 'lowRarity') {
-            return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
-        } else if (sortOrder === 'highPrice') {
-            const priceA = parseFloat(getPrice(a) || 0);
-            const priceB = parseFloat(getPrice(b) || 0);
-            return priceB - priceA;
-        } else if (sortOrder === 'lowPrice') {
-            const priceA = parseFloat(getPrice(a) || 0);
-            const priceB = parseFloat(getPrice(b) || 0);
-            return priceA - priceB;
-        } else if (sortOrder === 'AtoZ') {
-            return a.name.localeCompare(b.name);
-        } else if (sortOrder === 'ZtoA') {
-            return b.name.localeCompare(a.name);
+        switch (sortOrder) {
+            case 'oldest': case 'newest':
+                return sortOrder === 'oldest' ? new Date(a.set.releaseDate) - new Date(b.set.releaseDate) : new Date(b.set.releaseDate) - new Date(a.set.releaseDate);
+            case 'highRarity':
+                return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
+            case 'lowRarity':
+                return (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0);
+            case 'highPrice':
+                return (parseFloat(getPrice(b) || 0) - parseFloat(getPrice(a) || 0));
+            case 'lowPrice':
+                return (parseFloat(getPrice(a) || 0) - parseFloat(getPrice(b) || 0));
+            case 'AtoZ':
+                return a.name.localeCompare(b.name);
+            case 'ZtoA':
+                return b.name.localeCompare(a.name);
+            default:
+                return 0;
         }
     });
 }
 
-// Show popup image when image was clicked
 function showPopup(image, name) {
     const popup = document.getElementById('popup');
     const popupImage = document.getElementById('popupImage');
@@ -257,12 +212,12 @@ function showPopup(image, name) {
     document.body.style.overflow = "hidden";
 
     const close = document.getElementsByClassName('close')[0];
-    close.onclick = function() {
+    close.onclick = () => {
         popup.style.display = "none";
         document.body.style.overflow = "auto";
     };
 
-    window.onclick = function(event) {
+    window.onclick = event => {
         if (event.target == popup) {
             popup.style.display = "none";
             document.body.style.overflow = "auto";
@@ -270,17 +225,6 @@ function showPopup(image, name) {
     };
 }
 
-// Scroll to top button logic
-function scrollFunction() {
-    const scrollTopBtn = document.getElementById("scrollTopBtn");
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        scrollTopBtn.style.display = "block";
-    } else {
-        scrollTopBtn.style.display = "none";
-    }
-}
-
-// Rarity Order for sorting
 const rarityOrder = {
     "Common": 1,
     "Uncommon": 2,
