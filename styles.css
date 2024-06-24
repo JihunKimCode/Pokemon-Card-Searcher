@@ -37,7 +37,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Roboto", sans-serif;
     margin: 0px;
     background-color: var(--background);
 }
@@ -115,7 +115,6 @@ h1 a{
     border-color: var(--border);
     box-sizing: border-box;
     cursor: pointer;
-    font-family: 'NanumB', sans-serif;
     font-size: 12px;
     font-weight: bold;
     margin-right: 6px;
