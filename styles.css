@@ -105,7 +105,7 @@ h1 a{
     color: var(--gray);
 }
 
-#sortOrder, #rarityFilter{
+#sortOrder, #rarityFilter, #supertypeFilter{
     padding: 7px;    
     background: var(--white);
     color: var(--black);
@@ -124,7 +124,7 @@ h1 a{
     transition: height .4s ease;
 }
 
-#sortOrder option, #rarityFilter option{
+#sortOrder option, #rarityFilter option, #supertypeFilter option{
     font-size: 12px;
 }
 
@@ -142,14 +142,11 @@ h1 a{
 }
 
 .filter-container input[type="text"]{
-    margin-left: 5px;
-}
-
-.filter-container input[type="text"]{
     padding: 6px;
     font-size: 17px;
     border: none;
     width: 175px;
+    margin-left: 5px;
     border-top: 2px solid var(--border);
     border-left: 2px solid var(--border);
     border-bottom: 2px solid var(--border);  
@@ -444,6 +441,10 @@ footer a:hover{
         align-items: flex-end;
     }
 
+    .filter-container input[type="text"]{
+        width: auto;
+    }
+
     .filter-container select, .filter-container input[type="text"], .filter-container button {
         margin: 5px 0;
     }
@@ -452,8 +453,14 @@ footer a:hover{
         top: 37%;
     }
 
-    #sortOrder, #rarityFilter{
+    .options{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #sortOrder, #rarityFilter, #supertypeFilter{
         margin-right: 0px;
+        width: 33%;
     }
 
     #output{

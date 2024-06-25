@@ -13,12 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchQuery = document.getElementById('searchQuery');
     const sortOrder = document.getElementById('sortOrder');
     const rarityFilter = document.getElementById('rarityFilter');
+    const supertypeFilter = document.getElementById('supertypeFilter');
     const clearButton = document.getElementById('clearButton');
 
     fetchButton.addEventListener('click', fetchCards);
     searchQuery.addEventListener('keypress', event => event.key === 'Enter' && fetchCards());
     sortOrder.addEventListener('change', updateDisplay);
     rarityFilter.addEventListener('change', updateDisplay);
+    supertypeFilter.addEventListener('change', updateDisplay);
     clearButton.addEventListener('click', clearSearchQuery);
 
     // Search options buttons
@@ -84,12 +86,13 @@ function setSearchPlaceholder(placeholderText) {
     document.getElementById('searchQuery').placeholder = placeholderText;
 }
 
-function populateRarityOptions(cards) {
+function populateOptions(cards) {
+    //Rarity Filter
     const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean)));
     const rarityFilter = document.getElementById('rarityFilter');
-    const currentSelectedValue = rarityFilter.value;
+    const currentSelectedRarity = rarityFilter.value;
 
-    rarityFilter.innerHTML = '<option value="">Filter by Rarity</option>';
+    rarityFilter.innerHTML = '<option value="">🔍Rarity</option>';
 
     const sortedRarities = rarities.sort((a, b) => (rarityOrder[a] || 0) - (rarityOrder[b] || 0));
     sortedRarities.forEach(rarity => {
@@ -99,7 +102,24 @@ function populateRarityOptions(cards) {
         rarityFilter.appendChild(option);
     });
 
-    rarityFilter.value = rarities.includes(currentSelectedValue) ? currentSelectedValue : '';
+    rarityFilter.value = rarities.includes(currentSelectedRarity) ? currentSelectedRarity : '';
+
+    //Supertype Filter
+    const supertypes = Array.from(new Set(cards.map(card => card.supertype).filter(Boolean)));
+    const supertypeFilter = document.getElementById('supertypeFilter');
+    const currentSelectedSupertype = supertypeFilter.value;
+
+    supertypeFilter.innerHTML = '<option value="">🔍Supertype</option>';
+
+    supertypes.forEach(supertype => {
+        const option = document.createElement('option');
+        option.value = supertype;
+        option.textContent = supertype;
+        supertypeFilter.appendChild(option);
+    });
+
+    supertypeFilter.value = supertypes.includes(currentSelectedSupertype) ? currentSelectedSupertype : '';
+
     updateDisplay();
 }
 
@@ -146,7 +166,7 @@ async function fetchCards() {
 
             const data = await response.json();
             cachedData = data.data;
-            populateRarityOptions(cachedData);
+            populateOptions(cachedData);
             updateDisplay();
         } catch (error) {
             document.getElementById('output').innerHTML = `<p class="error">Error: ${error.message}</p>`;
@@ -160,11 +180,11 @@ async function fetchCards() {
 function updateDisplay() {
     const sortOrder = document.getElementById('sortOrder').value;
     const rarityFilter = document.getElementById('rarityFilter').value;
+    const supertypeFilter = document.getElementById('supertypeFilter').value;
 
     let filteredData = cachedData;
-    if (rarityFilter) {
-        filteredData = filteredData.filter(card => card.rarity === rarityFilter);
-    }
+    if (rarityFilter) filteredData = filteredData.filter(card => card.rarity === rarityFilter);
+    if (supertypeFilter) filteredData = filteredData.filter(card => card.supertype === supertypeFilter);
 
     const sortedData = sortCards(filteredData, sortOrder);
     const outputDiv = document.getElementById('output');
