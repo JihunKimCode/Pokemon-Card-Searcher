@@ -119,7 +119,7 @@ h1 a{
     font-weight: bold;
     overflow: hidden;
     width: 90px;
-
+    height: 36px;
     transition: height .4s ease;
 }
 
