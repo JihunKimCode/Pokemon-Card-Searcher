@@ -117,9 +117,8 @@ h1 a{
     cursor: pointer;
     font-size: 12px;
     font-weight: bold;
-    margin-right: 6px;
     overflow: hidden;
-    width: 125px;
+    width: 90px;
 
     transition: height .4s ease;
 }
@@ -145,7 +144,7 @@ h1 a{
     padding: 6px;
     font-size: 17px;
     border: none;
-    width: 175px;
+    width: 160px;
     margin-left: 5px;
     border-top: 2px solid var(--border);
     border-left: 2px solid var(--border);
@@ -456,6 +455,7 @@ footer a:hover{
     .options{
         display: flex;
         justify-content: space-between;
+        width: 100%;
     }
 
     #sortOrder, #rarityFilter, #supertypeFilter{

@@ -109,7 +109,7 @@ function populateOptions(cards) {
     const supertypeFilter = document.getElementById('supertypeFilter');
     const currentSelectedSupertype = supertypeFilter.value;
 
-    supertypeFilter.innerHTML = '<option value="">🔍Supertype</option>';
+    supertypeFilter.innerHTML = '<option value="">🔍Type</option>';
 
     supertypes.forEach(supertype => {
         const option = document.createElement('option');
