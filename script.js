@@ -166,6 +166,27 @@ async function fetchCards() {
 
             const data = await response.json();
             cachedData = data.data;
+
+            // Sorting logic for setListBtn
+            if (document.getElementById('setListBtn').classList.contains('active')) {
+                cachedData.sort((a, b) => {
+                    const extractIdParts = (id) => {
+                        const match = id.match(/-(\d+)(\D*)$/);
+                        if (match) {
+                            return { number: parseInt(match[1]), suffix: match[2] || '' };
+                        } else {
+                            return { number: Number.MAX_SAFE_INTEGER, suffix: id }; // Place non-matching IDs at the end
+                        }
+                    };
+
+                    const idA = extractIdParts(a.id);
+                    const idB = extractIdParts(b.id);
+
+                    const numCompare = idA.number - idB.number;
+                    if (numCompare !== 0) return numCompare;
+                    return idA.suffix.localeCompare(idB.suffix);
+                });
+            }
             populateOptions(cachedData);
             updateDisplay();
         } catch (error) {
