@@ -274,6 +274,10 @@ h1 a{
     color: var(--text);
 }
 
+.card a:hover{
+    color: var(--dark-gray);
+}
+
 .error {
     color: var(--error);
 }
