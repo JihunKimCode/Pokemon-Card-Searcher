@@ -1,5 +1,5 @@
 # [Pokémon Card Searcher](https://jihunkimcode.github.io/Pokemon-Card-Searcher/)
-![lapras](https://github.com/JihunKimCode/Pokemon-Card-Searcher/assets/135993942/92f98ff0-5195-4225-ac4c-a1408a354f4e)
+![lapras](https://github.com/user-attachments/assets/643550bb-b6b2-4d8d-9a09-6d3f817ec704)
 A simple webpage for those particularly interested in the Pokemon TCG illustrations.
 
 ## Features
@@ -7,4 +7,5 @@ A simple webpage for those particularly interested in the Pokemon TCG illustrati
 - Filter by Rarity
 - Sorting
   - By Alphabetically, by Release Date, by Rarity, and by Price
+- Copy link with query (Store SearchQuery, Filter, and Sort Information)
 - Dark Mode
