@@ -344,7 +344,7 @@ const rarityOrder = {
 };
 
 // Function to parse URL and update UI
-function parseURL() {
+async function parseURL() {
     const params = new URLSearchParams(window.location.search);
     
     const searchMode = params.get('searchMode') || 'pokemonName';
@@ -356,8 +356,6 @@ function parseURL() {
     // Update UI elements
     document.getElementById('searchQuery').value = searchQuery;
     document.getElementById('sortOrder').value = sortOrder;
-    document.getElementById('supertypeFilter').value = supertypeFilter;
-    document.getElementById('rarityFilter').value = rarityFilter;
     
     // Set active button based on searchMode
     document.querySelectorAll('.search-options button').forEach(button => {
@@ -365,7 +363,14 @@ function parseURL() {
             setActiveButton(button);
         }
     });
-
+    
     // Fetch cards based on the parsed parameters
-    if(searchQuery) fetchCards();
+    if (searchQuery) {
+        await fetchCards();
+    }
+
+    // Update filters
+    document.getElementById('supertypeFilter').value = supertypeFilter;
+    document.getElementById('rarityFilter').value = rarityFilter;
+    if(supertypeFilter || rarityFilter) updateDisplay();
 }
