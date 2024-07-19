@@ -80,7 +80,7 @@ document.getElementById('linkButton').addEventListener('click', () => {
 
 // Function to generate URL with current search parameters
 function generateURL(searchMode, searchQuery, sortOrder, supertypeFilter, rarityFilter) {
-    return `${window.location.origin}/Pokemon-Card-Searcher/index.html?${new URLSearchParams({
+    return `${window.location.origin}${window.location.pathname}?${new URLSearchParams({
         searchMode,
         searchQuery,
         sortOrder,
