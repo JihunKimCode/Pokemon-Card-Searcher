@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    parseURL();
+
     // Year in Footer
     const currentYear = new Date().getFullYear();
     document.querySelectorAll("#year, #year2").forEach(el => el.textContent = currentYear);
@@ -60,6 +62,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Initialize link button click event
+document.getElementById('linkButton').addEventListener('click', () => {
+    const searchMode = document.querySelector('.search-options button.active').id.replace('Btn', '');
+    const searchQuery = document.getElementById('searchQuery').value.trim();
+    const sortOrder = document.getElementById('sortOrder').value;
+    const supertypeFilter = document.getElementById('supertypeFilter').value;
+    const rarityFilter = document.getElementById('rarityFilter').value;
+    
+    // Generate URL based on current parameters
+    const url = generateURL(searchMode, searchQuery, sortOrder, supertypeFilter, rarityFilter);
+    
+    // Copy URL to clipboard
+    copyToClipboard(url);
+});
+
+// Function to generate URL with current search parameters
+function generateURL(searchMode, searchQuery, sortOrder, supertypeFilter, rarityFilter) {
+    return `${window.location.origin}?${new URLSearchParams({
+        searchMode,
+        searchQuery,
+        sortOrder,
+        supertypeFilter,
+        rarityFilter
+    }).toString()}`;
+}
+
+// Function to copy text to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            alert('Link copied to clipboard!');
+        })
+        .catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+}
 
 function darkmode() {
     document.body.classList.toggle("dark-mode");
@@ -303,3 +342,30 @@ const rarityOrder = {
     "Promo": 9,
     "Classic Collection": 9
 };
+
+// Function to parse URL and update UI
+function parseURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    const searchMode = params.get('searchMode') || 'pokemonName';
+    const searchQuery = params.get('searchQuery') || '';
+    const sortOrder = params.get('sortOrder') || 'newest';
+    const supertypeFilter = params.get('supertypeFilter') || '';
+    const rarityFilter = params.get('rarityFilter') || '';
+
+    // Update UI elements
+    document.getElementById('searchQuery').value = searchQuery;
+    document.getElementById('sortOrder').value = sortOrder;
+    document.getElementById('supertypeFilter').value = supertypeFilter;
+    document.getElementById('rarityFilter').value = rarityFilter;
+    
+    // Set active button based on searchMode
+    document.querySelectorAll('.search-options button').forEach(button => {
+        if (button.id === `${searchMode}Btn`) {
+            setActiveButton(button);
+        }
+    });
+
+    // Fetch cards based on the parsed parameters
+    if(searchQuery) fetchCards();
+}
