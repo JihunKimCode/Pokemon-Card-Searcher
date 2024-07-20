@@ -165,7 +165,7 @@ function populateOptions(cards) {
 function getPrice(card) {
     const priceAttributes = ['unlimited', '1stEdition', 'unlimitedHolofoil', '1stEditionHolofoil', 'normal', 'holofoil', 'reverseHolofoil'];
     for (const attr of priceAttributes) {
-        const price = card.tcgplayer?.prices?.[attr]?.mid;
+        const price = card.tcgplayer?.prices?.[attr]?.market || card.tcgplayer?.prices?.[attr]?.mid;
         if (price !== undefined) return price;
     }
     return undefined;
