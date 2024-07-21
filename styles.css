@@ -138,7 +138,7 @@ h1 a{
     display: flex;
 }
 
-#linkButton{
+#linkButton, #visibleButton{
     display: flex;
     margin-right: 10px;
     height: 25px;
@@ -149,7 +149,7 @@ h1 a{
     cursor: pointer;
 }
 
-#linkButton:hover{
+#linkButton:hover, #visibleButton:hover{
     background-color: var(--gray);
 }
 
@@ -295,6 +295,10 @@ h1 a{
 
 .card a:hover{
     color: var(--dark-gray);
+}
+
+.cardInfo {
+    display: block;
 }
 
 .error {
@@ -467,7 +471,7 @@ footer a:hover{
     }
 
     .filter-container input[type="text"]{
-        width: auto;
+        width: 265px;
     }
 
     .filter-container select, .filter-container input[type="text"], .filter-container button {

@@ -125,6 +125,24 @@ function setSearchPlaceholder(placeholderText) {
     document.getElementById('searchQuery').placeholder = placeholderText;
 }
 
+document.getElementById('visibleButton').addEventListener('click', function() {
+    const cardInfos = document.querySelectorAll('.cardInfo');
+    const icon = this.querySelector('i');
+    const isVisible = icon.classList.contains('fa-eye');
+
+    cardInfos.forEach(cardInfo => {
+        cardInfo.style.display = isVisible ? 'none' : 'block';
+    });
+
+    if (isVisible) {
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+});
+
 function populateOptions(cards) {
     //Rarity Filter
     const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean)));
@@ -248,15 +266,19 @@ function updateDisplay() {
 
     const sortedData = sortCards(filteredData, sortOrder);
     const outputDiv = document.getElementById('output');
+    const isVisible = document.querySelector('#visibleButton i').classList.contains('fa-eye');
+
     outputDiv.innerHTML = sortedData.length ? sortedData.map(card => `
         <div class="card">
             <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
-            <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
-            <p><b>${card.name}</b></p>
-            <p><i>Illus. ${card.artist || 'N/A'}</i></p>
-            <p>${card.set.releaseDate || 'N/A'}</p>
-            <p>${card.rarity || 'N/A'}</p>
-            <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>
+            <div class="cardInfo" style="display: ${isVisible ? 'block' : 'none'};">
+                <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
+                <p><b>${card.name}</b></p>
+                <p><i>Illus. ${card.artist || 'N/A'}</i></p>
+                <p>${card.set.releaseDate || 'N/A'}</p>
+                <p>${card.rarity || 'N/A'}</p>
+                <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>
+            </div>
         </div>`).join('') : '<p class="error">No cards found for this query.</p>';
 }
 
