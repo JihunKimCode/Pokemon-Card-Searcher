@@ -222,10 +222,6 @@ function updateChart(canvasId, title, data, type = 'bar') {
     });
 }
 
-function closeStats() {
-    document.getElementById('statsModal').style.display = 'none';
-}
-
 // Initialize link button click event
 document.getElementById('linkButton').addEventListener('click', () => {
     const searchMode = document.querySelector('.search-options button.active').id.replace('Btn', '');
