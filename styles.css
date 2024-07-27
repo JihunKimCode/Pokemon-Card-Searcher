@@ -13,6 +13,7 @@
     --popup: rgba(0, 0, 0, 0.7);
     --error: red;
     --dark-gray: #aaa;
+    --stat: #fff;
     --clear-button-hover: rgba(169, 169, 169, 0.5);
     --clear-button-active: rgba(169, 169, 169, 0.7);
 }
@@ -32,6 +33,7 @@
     --popup: rgba(0, 0, 0, 0.7);
     --error: red;
     --dark-gray: #aaa;
+    --stat: #ccc;
     --clear-button-hover: rgba(169, 169, 169, 0.5);
     --clear-button-active: rgba(169, 169, 169, 0.7);
 }
@@ -167,7 +169,7 @@ h1 a{
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: var(--stat);
     margin: 3% auto;
     padding: 20px;
     border: none;
@@ -184,6 +186,8 @@ h1 a{
 canvas {
     width: 100%;
     height: 100%;
+    background-color: var(--stat);
+    border-color: var(--gray);
 }
 
 .filter-container {
@@ -504,7 +508,7 @@ footer a:hover{
     }
 
     .filter-container input[type="text"]{
-        width: 285px;
+        width: 280px;
     }
 
     .filter-container select, .filter-container input[type="text"], .filter-container button {

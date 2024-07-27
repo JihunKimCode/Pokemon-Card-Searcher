@@ -90,8 +90,8 @@ function showStats() {
         <p><b>Total number of cards:</b> ${stats.totalCards}</p>
         <p><b>Earliest release date:</b> ${stats.earliestDate}</p>
         <p><b>Latest release date:</b> ${stats.latestDate}</p>
-        <p><b>Most expensive card price:</b> $${stats.mostExpensive}</p>
         <p><b>Cheapest card price:</b> $${stats.cheapest}</p>
+        <p><b>Most expensive card price:</b> $${stats.mostExpensive}</p>
     `;
 
     document.getElementById('statsModal').style.display = 'block';
@@ -205,8 +205,6 @@ function updateChart(canvasId, title, data, type = 'bar') {
             datasets: [{
                 label: title,
                 data: Object.values(data),
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
         },
