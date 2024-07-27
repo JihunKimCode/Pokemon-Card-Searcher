@@ -476,7 +476,7 @@ function showPopup(image, name) {
     popupImage.src = image;
     document.body.style.overflow = "hidden";
 
-    const close = document.getElementsByClassName('close')[0];
+    const close = document.getElementsByClassName('close')[1];
     close.onclick = () => {
         popup.style.display = "none";
         document.body.style.overflow = "auto";

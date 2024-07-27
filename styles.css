@@ -175,21 +175,6 @@ h1 a{
     width: 80%;
 }
 
-/* Close button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
 .chart-container {
     width: 100%;
     height: 300px;
