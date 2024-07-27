@@ -61,7 +61,170 @@ document.addEventListener('DOMContentLoaded', () => {
             darkmode();
         }
     });
+
+    // Stats Button Event Listener
+    document.getElementById('statsButton').addEventListener('click', showStats);
+
+    // Modal Close Event Listener
+    document.querySelector('#statsModal .close').addEventListener('click', () => {
+        document.getElementById('statsModal').style.display = 'none';
+        document.body.style.overflow = "auto";
+    });
+
+    window.addEventListener('click', event => {
+        if (event.target == document.getElementById('statsModal')) {
+            document.getElementById('statsModal').style.display = 'none';
+            document.body.style.overflow = "auto";
+        }
+    });
 });
+
+let charts = {}; // Keep track of chart instances
+
+function showStats() {
+    const stats = calculateStats(cachedData);
+    const statsContent = document.getElementById('statsContent');
+    document.body.style.overflow = "hidden";
+
+    statsContent.innerHTML = `
+        <p><b>Total number of cards:</b> ${stats.totalCards}</p>
+        <p><b>Earliest release date:</b> ${stats.earliestDate}</p>
+        <p><b>Latest release date:</b> ${stats.latestDate}</p>
+        <p><b>Most expensive card price:</b> $${stats.mostExpensive}</p>
+        <p><b>Cheapest card price:</b> $${stats.cheapest}</p>
+    `;
+
+    document.getElementById('statsModal').style.display = 'block';
+
+    updateChart('priceTrendChart', 'Price Changes Over Time', stats.averagePriceByDate, 'line');
+    updateChart('rarityChart', 'Number of cards by rarity', stats.rarityCounts);
+    updateChart('subtypeChart', 'Number of cards by subtype', stats.subtypeCounts);
+    updateChart('supertypeChart', 'Number of cards by supertype', stats.supertypeCounts);
+    updateChart('illustratorChart', 'Top 5 illustrators', Object.fromEntries(stats.topIllustrators.map(({ name, count }) => [name, count])));
+}
+
+function calculateStats(cards) {
+    const rarityCounts = {};
+    const subtypeCounts = {};
+    const supertypeCounts = {};
+    const priceByDate = {};
+    let earliestDate = null;
+    let latestDate = null;
+    let mostExpensive = -Infinity;
+    let cheapest = Infinity;
+    const illustratorCounts = {};
+    const totalCards = cards.length;
+
+    cards.forEach(card => {
+        // Count rarities
+        if (card.rarity) {
+            rarityCounts[card.rarity] = (rarityCounts[card.rarity] || 0) + 1;
+        }
+
+        // Count supertypes
+        if (card.supertype) {
+            supertypeCounts[card.supertype] = (supertypeCounts[card.supertype] || 0) + 1;
+        }
+
+        // Count subtypes
+        if (card.subtypes) {
+            card.subtypes.forEach(subtype => {
+                subtypeCounts[subtype] = (subtypeCounts[subtype] || 0) + 1;
+            });
+        }
+
+        // Find earliest and latest release dates
+        const releaseDate = new Date(card.set.releaseDate);
+        if (!earliestDate || releaseDate < earliestDate) earliestDate = releaseDate;
+        if (!latestDate || releaseDate > latestDate) latestDate = releaseDate;
+
+        // Track highest price by date
+        const price = getPrice(card);
+        if (price !== undefined) {
+            const dateKey = releaseDate.toISOString().split('T')[0]; // Date in YYYY-MM-DD format
+            if (!priceByDate[dateKey] || price > priceByDate[dateKey]) {
+                priceByDate[dateKey] = price;
+            }
+            
+            if (price > mostExpensive) mostExpensive = price;
+            if (price < cheapest) cheapest = price;
+        }
+
+        // Count illustrators
+        if (card.artist) {
+            illustratorCounts[card.artist] = (illustratorCounts[card.artist] || 0) + 1;
+        }
+    });
+
+    // Calculate average price per date
+    const averagePriceByDate = Object.entries(priceByDate)
+        .map(([date, price]) => [
+            date,
+            price.toFixed(2)
+        ])
+        .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB)) // Sort dates from oldest to newest
+        .reduce((acc, [date, avgPrice]) => {
+            acc[date] = avgPrice;
+            return acc;
+        }, {});
+
+    const topIllustrators = Object.entries(illustratorCounts)
+        .filter(([, count]) => count > 2)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5)
+        .map(([name, count]) => ({ name, count }));
+
+    return {
+        totalCards,
+        rarityCounts: sortObjectByValues(rarityCounts),
+        subtypeCounts: sortObjectByValues(subtypeCounts),
+        supertypeCounts: sortObjectByValues(supertypeCounts),
+        earliestDate: earliestDate ? earliestDate.toISOString().split('T')[0] : 'N/A',
+        latestDate: latestDate ? latestDate.toISOString().split('T')[0] : 'N/A',
+        mostExpensive: mostExpensive === -Infinity ? 'N/A' : mostExpensive.toFixed(2),
+        cheapest: cheapest === Infinity ? 'N/A' : cheapest.toFixed(2),
+        topIllustrators,
+        averagePriceByDate
+    };
+}
+
+function sortObjectByValues(obj) {
+    return Object.fromEntries(Object.entries(obj).sort(([, a], [, b]) => b - a));
+}
+
+function updateChart(canvasId, title, data, type = 'bar') {
+    if (charts[canvasId]) {
+        charts[canvasId].destroy(); // Destroy existing chart instance
+    }
+
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    charts[canvasId] = new Chart(ctx, {
+        type: type,
+        data: {
+            labels: Object.keys(data),
+            datasets: [{
+                label: title,
+                data: Object.values(data),
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Allow custom sizing
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function closeStats() {
+    document.getElementById('statsModal').style.display = 'none';
+}
 
 // Initialize link button click event
 document.getElementById('linkButton').addEventListener('click', () => {

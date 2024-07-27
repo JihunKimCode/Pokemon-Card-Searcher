@@ -138,7 +138,7 @@ h1 a{
     display: flex;
 }
 
-#linkButton, #visibleButton{
+#linkButton, #visibleButton, #statsButton{
     display: flex;
     margin-right: 10px;
     height: 25px;
@@ -149,8 +149,56 @@ h1 a{
     cursor: pointer;
 }
 
-#linkButton:hover, #visibleButton:hover{
+#linkButton:hover, #visibleButton:hover, #statsButton:hover{
     background-color: var(--gray);
+}
+
+/* Styles for modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 3% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    width: 80%;
+}
+
+/* Close button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+}
+
+/* Ensure canvas fills container */
+canvas {
+    width: 100%;
+    height: 100%;
 }
 
 .filter-container {
