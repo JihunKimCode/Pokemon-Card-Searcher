@@ -100,7 +100,7 @@ function showStats() {
     updateChart('rarityChart', 'Number of cards by rarity', stats.rarityCounts);
     updateChart('subtypeChart', 'Number of cards by subtype', stats.subtypeCounts);
     updateChart('supertypeChart', 'Number of cards by supertype', stats.supertypeCounts);
-    updateChart('illustratorChart', 'Top 5 illustrators', Object.fromEntries(stats.topIllustrators.map(({ name, count }) => [name, count])));
+    updateChart('illustratorChart', 'Top 10 illustrators', Object.fromEntries(stats.topIllustrators.map(({ name, count }) => [name, count])));
 }
 
 function calculateStats(cards) {
@@ -169,9 +169,8 @@ function calculateStats(cards) {
         }, {});
 
     const topIllustrators = Object.entries(illustratorCounts)
-        .filter(([, count]) => count > 2)
         .sort(([, a], [, b]) => b - a)
-        .slice(0, 5)
+        .slice(0, 10)
         .map(([name, count]) => ({ name, count }));
 
     return {
