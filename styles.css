@@ -492,7 +492,7 @@ footer a:hover{
         flex-direction: column;
         align-items: flex-end;
         float: right;
-        margin-top: 5px;
+        margin-top: 10px;
     }
 
     .search-options{
