@@ -479,7 +479,7 @@ footer a:hover{
     }
 
     h1{
-        font-size: 28px;
+        font-size: 26px;
     }
 
     .btn{
@@ -527,7 +527,7 @@ footer a:hover{
 
     #sortOrder, #rarityFilter, #supertypeFilter{
         margin-right: 0px;
-        width: 33%;
+        width: 32.5%;
     }
 
     #output{
