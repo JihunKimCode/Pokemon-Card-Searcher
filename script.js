@@ -43,6 +43,28 @@ document.addEventListener('DOMContentLoaded', () => {
         setSearchPlaceholder("Enter Expansion Name");
     });
 
+    // Change search mode using keyboard
+    document.addEventListener('keydown', function(event) {
+        if (event.altKey && event.key === '1') {
+            setActiveButton(pokemonNameBtn);
+            setSearchPlaceholder("Enter Card Name");
+        } else if (event.altKey && event.key === '2') {
+            setActiveButton(artistNameBtn);
+            setSearchPlaceholder("Enter Artist Name");
+        } else if (event.altKey && event.key === '3') {
+            setActiveButton(setListBtn);
+            setSearchPlaceholder("Enter Expansion Name");
+        }
+    });
+
+    // Move to search bar when input "/"
+    document.addEventListener('keydown', function (event) {
+        if (event.key === '/') {
+        event.preventDefault();
+        document.getElementById('searchQuery').focus();
+        }
+    });
+
     // Scroll to Top button
     const scrollTopBtn = document.getElementById("scrollTopBtn");
     window.addEventListener('scroll', () => {
@@ -281,9 +303,17 @@ function setSearchPlaceholder(placeholderText) {
     document.getElementById('searchQuery').placeholder = placeholderText;
 }
 
-document.getElementById('visibleButton').addEventListener('click', function() {
+document.getElementById('visibleButton').addEventListener('click', toggleVisibility);
+
+document.addEventListener('keydown', function(event) {
+    if (event.altKey && event.key === '`') {
+        toggleVisibility();
+    }
+});
+
+function toggleVisibility() {
     const cardInfos = document.querySelectorAll('.cardInfo');
-    const icon = this.querySelector('i');
+    const icon = document.getElementById('visibleButton').querySelector('i');
     const isVisible = icon.classList.contains('fa-eye');
 
     cardInfos.forEach(cardInfo => {
@@ -297,7 +327,7 @@ document.getElementById('visibleButton').addEventListener('click', function() {
         icon.classList.remove('fa-eye-slash');
         icon.classList.add('fa-eye');
     }
-});
+}
 
 function populateOptions(cards) {
     //Rarity Filter
