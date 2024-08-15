@@ -101,6 +101,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Function to parse URL and update UI
+async function parseURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    const searchMode = params.get('searchMode') || 'pokemonName';
+    const searchQuery = params.get('searchQuery') || '';
+    const sortOrder = params.get('sortOrder') || 'newest';
+    const supertypeFilter = params.get('supertypeFilter') || '';
+    const rarityFilter = params.get('rarityFilter') || '';
+
+    // Update UI elements
+    document.getElementById('searchQuery').value = searchQuery;
+    document.getElementById('sortOrder').value = sortOrder;
+    
+    // Set active button based on searchMode
+    document.querySelectorAll('.search-options button').forEach(button => {
+        if (button.id === `${searchMode}Btn`) {
+            setActiveButton(button);
+        }
+    });
+    
+    // Fetch cards based on the parsed parameters
+    if (searchQuery) {
+        await fetchCards();
+    }
+
+    // Update filters
+    document.getElementById('supertypeFilter').value = supertypeFilter;
+    document.getElementById('rarityFilter').value = rarityFilter;
+    if(supertypeFilter || rarityFilter) updateDisplay();
+}
+
 let charts = {}; // Keep track of chart instances
 
 function showStats() {
@@ -513,72 +545,41 @@ function showPopup(image, name) {
     };
 }
 
+// Rarity Order for sorting
 const rarityOrder = {
-    "Common": 1,
-    "Uncommon": 2,
-    "Rare": 3,
-    "Radiant Rare": 3,
-    "Amazing Rare": 4,
-    "Double Rare": 4,
-    "Rare Holo": 5,
-    "Rare ACE": 5,
-    "Ultra Rare": 6,
-    "Rare Ultra": 6,
-    "Rare Shiny": 6,
-    "Shiny Rare": 6,
-    "Illustration Rare": 6,
-    "Rare Holo Star": 6,
-    "Rare Prism Star": 6,
-    "Rare Holo LV.X": 6,
-    "LEGEND": 6,
-    "Rare BREAK": 6,
-    "Rare Prime": 6,
-    "Rare Holo EX": 6,
-    "Rare Holo GX": 6,
-    "Rare Holo V": 6,
-    "Rare Holo VSTAR": 7,
-    "Rare Holo VMAX": 7,
-    "Rare Secret": 7,
-    "Trainer Gallery Rare Holo": 7,
-    "Rare Rainbow": 7,
-    "Rare Shining": 7,
-    "Rare Shiny GX": 7,
-    "ACE SPEC Rare": 7,
-    "Shiny Ultra Rare": 7,
-    "Special Illustration Rare": 8,
-    "Hyper Rare": 9,
-    "Promo": 9,
-    "Classic Collection": 9
+    "Common": 10,
+    "Uncommon": 20,
+    "Rare": 30,                         // Regular
+    "Classic Collection": 31,
+    "Double Rare": 40,                  // EX
+    "Rare Holo": 50,                    // Holofoil
+    "Ultra Rare": 60,                   // Unique card classification
+    "Rare Ultra": 60,                   // Unique card classification
+    "Rare Holo Star": 61,
+    "Rare Prime": 61,
+    "Rare Holo LV.X": 61,
+    "Rare Holo EX": 61,
+    "Rare Holo GX": 61,
+    "LEGEND": 61,
+    "Rare BREAK": 61,
+    "Amazing Rare": 61,
+    "Rare Prism Star": 61,
+    "Rare ACE": 61,
+    "ACE SPEC Rare": 61,
+    "Radiant Rare": 62,
+    "Rare Holo V": 63,
+    "Rare Holo VSTAR": 64,
+    "Rare Holo VMAX": 65,
+    "Trainer Gallery Rare Holo": 66,
+    "Rare Secret": 70,                  // Out of numbers
+    "Rare Shining": 71,                 // Shiny Pokemon
+    "Shiny Rare": 72,                   // Shiny Pokemon
+    "Rare Shiny": 72,                   // Shiny Pokemon
+    "Rare Shiny GX": 73,                // Shiny Pokemon
+    "Shiny Ultra Rare": 73,             // Shiny Pokemon
+    "Rare Rainbow": 74,
+    "Illustration Rare": 75,            // Full-Art
+    "Special Illustration Rare": 76,    // Full-Art
+    "Hyper Rare": 80,                   // Gold Cards
+    "Promo": 90                         // Event Cards
 };
-
-// Function to parse URL and update UI
-async function parseURL() {
-    const params = new URLSearchParams(window.location.search);
-    
-    const searchMode = params.get('searchMode') || 'pokemonName';
-    const searchQuery = params.get('searchQuery') || '';
-    const sortOrder = params.get('sortOrder') || 'newest';
-    const supertypeFilter = params.get('supertypeFilter') || '';
-    const rarityFilter = params.get('rarityFilter') || '';
-
-    // Update UI elements
-    document.getElementById('searchQuery').value = searchQuery;
-    document.getElementById('sortOrder').value = sortOrder;
-    
-    // Set active button based on searchMode
-    document.querySelectorAll('.search-options button').forEach(button => {
-        if (button.id === `${searchMode}Btn`) {
-            setActiveButton(button);
-        }
-    });
-    
-    // Fetch cards based on the parsed parameters
-    if (searchQuery) {
-        await fetchCards();
-    }
-
-    // Update filters
-    document.getElementById('supertypeFilter').value = supertypeFilter;
-    document.getElementById('rarityFilter').value = rarityFilter;
-    if(supertypeFilter || rarityFilter) updateDisplay();
-}
