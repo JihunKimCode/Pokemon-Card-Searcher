@@ -411,6 +411,25 @@ let cachedData = [];
 let currentQuery = '';
 let currentSearchMode = '';
 
+function compareIds(a, b, sortOrder) {
+    const extractIdParts = (id) => {
+        const match = id.match(/-(\d+)(\D*)$/);
+        if (match) {
+            return { number: parseInt(match[1]), suffix: match[2] || '' };
+        } else {
+            return { number: Number.MAX_SAFE_INTEGER, suffix: id }; // Non-matching IDs at the end
+        }
+    };
+
+    const idA = extractIdParts(a.id);
+    const idB = extractIdParts(b.id);
+
+    const numCompare = (idA.number - idB.number) * sortOrder;
+    if (numCompare !== 0) return numCompare;
+
+    return idA.suffix.localeCompare(idB.suffix) * sortOrder;
+}
+
 async function fetchCards() {
     const queryInput = document.getElementById('searchQuery').value.trim();
     if (!queryInput) {
@@ -444,23 +463,7 @@ async function fetchCards() {
 
             // Sorting logic for setListBtn
             if (document.getElementById('setListBtn').classList.contains('active')) {
-                cachedData.sort((a, b) => {
-                    const extractIdParts = (id) => {
-                        const match = id.match(/-(\d+)(\D*)$/);
-                        if (match) {
-                            return { number: parseInt(match[1]), suffix: match[2] || '' };
-                        } else {
-                            return { number: Number.MAX_SAFE_INTEGER, suffix: id }; // Place non-matching IDs at the end
-                        }
-                    };
-
-                    const idA = extractIdParts(a.id);
-                    const idB = extractIdParts(b.id);
-
-                    const numCompare = idA.number - idB.number;
-                    if (numCompare !== 0) return numCompare;
-                    return idA.suffix.localeCompare(idB.suffix);
-                });
+                cachedData.sort((a, b) => compareIds(a, b, 1));
             }
             populateOptions(cachedData);
             updateDisplay();
@@ -503,8 +506,12 @@ function updateDisplay() {
 function sortCards(data, sortOrder) {
     return data.sort((a, b) => {
         switch (sortOrder) {
-            case 'oldest': case 'newest':
-                return sortOrder === 'oldest' ? new Date(a.set.releaseDate) - new Date(b.set.releaseDate) : new Date(b.set.releaseDate) - new Date(a.set.releaseDate);
+            case 'oldest': 
+                if (document.getElementById('setListBtn').classList.contains('active')) return compareIds(a, b, -1);
+                return new Date(a.set.releaseDate) - new Date(b.set.releaseDate)
+            case 'newest':
+                if (document.getElementById('setListBtn').classList.contains('active')) return compareIds(a, b, 1);
+                return new Date(b.set.releaseDate) - new Date(a.set.releaseDate);
             case 'highRarity':
                 return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
             case 'lowRarity':
