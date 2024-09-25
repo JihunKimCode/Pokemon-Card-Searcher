@@ -507,11 +507,11 @@ function sortCards(data, sortOrder) {
     return data.sort((a, b) => {
         switch (sortOrder) {
             case 'oldest': 
-                if (document.getElementById('setListBtn').classList.contains('active')) return compareIds(a, b, -1);
                 return new Date(a.set.releaseDate) - new Date(b.set.releaseDate)
             case 'newest':
-                if (document.getElementById('setListBtn').classList.contains('active')) return compareIds(a, b, 1);
                 return new Date(b.set.releaseDate) - new Date(a.set.releaseDate);
+            case 'id':
+                return compareIds(a, b, 1);
             case 'highRarity':
                 return (rarityOrder[b.rarity] || 0) - (rarityOrder[a.rarity] || 0);
             case 'lowRarity':
@@ -558,8 +558,8 @@ const rarityOrder = {
     "Uncommon": 20,
     "Rare": 30,                         // Regular
     "Classic Collection": 31,
-    "Double Rare": 40,                  // EX
-    "Rare Holo": 50,                    // Holofoil
+    "Rare Holo": 40,                    // Holofoil
+    "Double Rare": 50,                  // EX
     "Ultra Rare": 60,                   // Unique card classification
     "Rare Ultra": 60,                   // Unique card classification
     "Rare Holo Star": 61,
