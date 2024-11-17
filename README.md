@@ -4,12 +4,13 @@ A simple webpage for those particularly interested in the Pokemon TCG illustrati
 
 ## Features
 - **Search Card(Pokemon/Trainer/Energy), Artist, and Expansions!**
-- Filter by Rarity
+- Filter by Type and/or Rarity
 - Sorting
-  - By Alphabetically, by Release Date, by Rarity, and by Price
+  - By Release Date, by Alphabetically, by Rarity, and by Price
 - Copy Link with Query
   - Store SearchQuery, Filter, and Sort Information
   - https://jihunkimcode.github.io/Pokemon-Card-Searcher/?searchMode=pokemonName&searchQuery=lapras&sortOrder=newest&supertypeFilter=&rarityFilter=
+- Hyperlink to Pokemon, artist, and expansion
 ### Toggle Card Information
 ![lapras-notext](https://github.com/user-attachments/assets/a0e2e3eb-9a89-46b7-a51a-e7e3e5950b1a)
 ### Show Stats of Cards
