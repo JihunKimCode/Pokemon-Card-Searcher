@@ -493,9 +493,21 @@ function updateDisplay() {
         <div class="card">
             <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
             <div class="cardInfo" style="display: ${isVisible ? 'block' : 'none'};">
-                <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: default">
-                <p><b>${card.name}</b></p>
-                <p><i>Illus. ${card.artist || 'N/A'}</i></p>
+                <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(card.set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                    <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: pointer">
+                </a>
+                <p>
+                    <a href="${window.location.origin}${window.location.pathname}?searchMode=pokemonName&searchQuery=${encodeURIComponent(card.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                        <b>${card.name}</b>
+                    </a>
+                </p>
+                <p><i>Illus. ${
+                    card.artist && card.artist !== 'N/A' 
+                        ? `<a href="${window.location.origin}${window.location.pathname}?searchMode=artistName&searchQuery=${encodeURIComponent(card.artist)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                        ${card.artist}
+                        </a>`
+                        : 'N/A'
+                }</i></p>
                 <p>${card.set.releaseDate || 'N/A'}</p>
                 <p>${card.rarity || 'N/A'}</p>
                 <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>

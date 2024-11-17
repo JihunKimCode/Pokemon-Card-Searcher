@@ -129,6 +129,11 @@ h1 a{
     font-size: 12px;
 }
 
+#rarityFilter option:first-child,
+#supertypeFilter option:first-child {
+    background-color: var(--footer);
+}
+
 .searchTools{
     display: flex;
     flex-direction: column;
