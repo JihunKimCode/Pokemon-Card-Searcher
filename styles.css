@@ -145,9 +145,9 @@ h1 a{
     display: flex;
 }
 
-#linkButton, #visibleButton, #statsButton{
+#drawButton, #linkButton, #visibleButton, #statsButton{
     display: flex;
-    margin-right: 10px;
+    margin-right: 9px;
     height: 25px;
     align-items: center;
     border-radius: 5px;
@@ -156,8 +156,39 @@ h1 a{
     cursor: pointer;
 }
 
-#linkButton:hover, #visibleButton:hover, #statsButton:hover{
+#drawButton:hover, #linkButton:hover, #visibleButton:hover, #statsButton:hover{
     background-color: var(--gray);
+}
+
+/* Styles for draw */
+.draw{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--popup);
+}
+
+.draw-content{
+    background-color: var(--stat);
+    margin: 3% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    width: 80%;
+}
+
+#cardContainer{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-items: center;
 }
 
 /* Styles for modal */
@@ -251,7 +282,7 @@ canvas {
 
 /*No margin for last item*/
 .search-options button:not(:last-child) {
-    margin-right: 10px;
+    margin-right: 9px;
 }
 
 .search-options button.active {
@@ -341,6 +372,16 @@ canvas {
 
 .cardInfo {
     display: block;
+}
+
+/* For the cards in the draw popup container */
+.draw .card {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Fade-in effect */
+}
+
+.draw .card.visible {
+    opacity: 1; /* Make the card visible */
 }
 
 .error {
@@ -544,6 +585,15 @@ footer a:hover{
     }
 
     #output{
+        width: 100%;
+        grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+        row-gap: 5px;
+        column-gap: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    #cardContainer{
         width: 100%;
         grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
         row-gap: 5px;

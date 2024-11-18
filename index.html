@@ -29,6 +29,7 @@
     </h1>
     <div class="searchTools">
         <div class="container">
+            <button id="drawButton" title="Draw random cards"><i class="fa-solid fa-clover"></i></button>
             <button id="linkButton" title="Copy hyperlink"><i class="fa-solid fa-link"></i></button>
             <button id="statsButton" title="Show card stats"><i class="fa-solid fa-chart-column"></i></button>
             <button id="visibleButton" title="Toggle card info"><i class="fa-solid fa-eye"></i></button>
@@ -70,6 +71,12 @@
 </div>
 
 <div id="output"></div>
+<div id="luckyDraw" class="draw">
+    <div class="draw-content">
+        <span class="close">&times;</span>
+        <div id="cardContainer"></div>
+    </div>
+</div>
 <div id="statsModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>

@@ -84,6 +84,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Draw Button Event Listener
+    document.getElementById("drawButton").addEventListener("click", () => {
+        const randomCards = getRandomCards();
+        displayRandomCards(randomCards);
+        document.getElementById("luckyDraw").style.display = "block";
+    });
+    
+    // Draw Close Event Listener
+    document.querySelector('#luckyDraw .close').addEventListener('click', () => {
+        document.getElementById("luckyDraw").style.display = "none";
+        document.body.style.overflow = "auto";
+    });
+
+    window.addEventListener('click', event => {
+        if (event.target == document.getElementById('luckyDraw')) {
+            document.getElementById('luckyDraw').style.display = 'none';
+            document.body.style.overflow = "auto";
+        }
+    });
+    
     // Stats Button Event Listener
     document.getElementById('statsButton').addEventListener('click', showStats);
 
@@ -131,6 +151,54 @@ async function parseURL() {
     document.getElementById('supertypeFilter').value = supertypeFilter;
     document.getElementById('rarityFilter').value = rarityFilter;
     if(supertypeFilter || rarityFilter) updateDisplay();
+}
+
+// Randomly choose cards
+function getRandomCards() {
+    // Check if cachedData is empty
+    if (cachedData.length === 0) {
+        throw new Error('No cards available in cachedData.');
+    }
+
+    // Randomly select 1 card if cachedData has less than 10 cards
+    let selectedCards = [];
+    let remainingCards = [...cachedData];
+    
+    // Draw only one card if there are fewer than 10 cards
+    let numCardsToDraw = remainingCards.length < 10 ? 1 : 10;
+    
+    for (let i = 0; i < numCardsToDraw; i++) {
+        let randomIndex = Math.floor(Math.random() * remainingCards.length);
+        selectedCards.push(remainingCards[randomIndex]);
+        remainingCards.splice(randomIndex, 1); // Remove the selected card
+    }
+
+    return selectedCards;
+}
+
+function displayRandomCards(cards) {
+    const container = document.getElementById("cardContainer");
+    container.style.display = 'grid';
+    document.body.style.overflow = "hidden";
+    container.innerHTML = ''; // Clear previous cards
+
+    cards.forEach((card, index) => {
+        // Delay each card's display by 300ms (adjust as needed)
+        setTimeout(() => {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+            cardElement.innerHTML = `
+                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+            `;
+
+            container.appendChild(cardElement);
+
+            // Trigger the fade-in effect by adding the 'visible' class to the card
+            setTimeout(() => {
+                cardElement.classList.add('visible');
+            }, 20); // Small delay to ensure card is added to the DOM before the fade-in starts
+        }, index * 300); // Delay between each card
+    });
 }
 
 let charts = {}; // Keep track of chart instances
