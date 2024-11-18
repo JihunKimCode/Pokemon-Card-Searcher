@@ -196,7 +196,7 @@ function getRandomCards() {
         throw new Error('No cards available in Data.');
     }
 
-    // Randomly select 1 card if filteredCachedData has less than 10 cards
+    // Randomly select cards
     let selectedCards = [];
     let remainingCards = [...filteredCachedData];
     
@@ -208,6 +208,9 @@ function getRandomCards() {
         selectedCards.push(remainingCards[randomIndex]);
         remainingCards.splice(randomIndex, 1); // Remove the selected card
     }
+
+    // Sort the selected cards by rarity
+    selectedCards.sort((a, b) => (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0));
 
     return selectedCards;
 }
