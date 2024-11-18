@@ -118,19 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close if Escape key is pressed
-    window.addEventListener('keydown', event => {
-        const luckyDraw = document.getElementById('luckyDraw');
-        if (event.key === 'Escape') {
-            // Clear the card container when closing the popup
-            document.getElementById("cardContainer").innerHTML = ''; 
-            clearTimeouts();
-
-            luckyDraw.style.display = 'none';
-            document.body.style.overflow = "auto";
-        }
-    });
-
     // Stats Button Event Listener
     document.getElementById('statsButton').addEventListener('click', showStats);
 
@@ -142,14 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('click', event => {
         if (event.target == document.getElementById('statsModal')) {
-            document.getElementById('statsModal').style.display = 'none';
-            document.body.style.overflow = "auto";
-        }
-    });
-
-    // Close the modal when the Escape key is pressed
-    window.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
             document.getElementById('statsModal').style.display = 'none';
             document.body.style.overflow = "auto";
         }
