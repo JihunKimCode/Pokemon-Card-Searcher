@@ -192,6 +192,7 @@ async function parseURL() {
 function getRandomCards() {
     // Check if filteredCachedData is empty
     if (filteredCachedData.length === 0) {
+        alert('Search Cards First!');
         throw new Error('No cards available in Data.');
     }
 
