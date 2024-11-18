@@ -86,24 +86,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Draw Button Event Listener
     document.getElementById("drawButton").addEventListener("click", () => {
+        // Clear the card container when closing the popup
+        document.getElementById("cardContainer").innerHTML = ''; 
+
         const randomCards = getRandomCards();
         displayRandomCards(randomCards);
+
         document.getElementById("luckyDraw").style.display = "block";
     });
-    
+
     // Draw Close Event Listener
     document.querySelector('#luckyDraw .close').addEventListener('click', () => {
+        // Clear the card container when closing the popup
+        document.getElementById("cardContainer").innerHTML = ''; 
+        clearTimeouts();
+
         document.getElementById("luckyDraw").style.display = "none";
         document.body.style.overflow = "auto";
     });
 
+    // Close if clicked outside the popup
     window.addEventListener('click', event => {
-        if (event.target == document.getElementById('luckyDraw')) {
-            document.getElementById('luckyDraw').style.display = 'none';
+        const luckyDraw = document.getElementById('luckyDraw');
+        if (event.target == luckyDraw) {
+            // Clear the card container when closing the popup
+            document.getElementById("cardContainer").innerHTML = ''; 
+            clearTimeouts();
+
+            luckyDraw.style.display = 'none';
             document.body.style.overflow = "auto";
         }
     });
-    
+
+    // Close if Escape key is pressed
+    window.addEventListener('keydown', event => {
+        const luckyDraw = document.getElementById('luckyDraw');
+        if (event.key === 'Escape') {
+            // Clear the card container when closing the popup
+            document.getElementById("cardContainer").innerHTML = ''; 
+            clearTimeouts();
+
+            luckyDraw.style.display = 'none';
+            document.body.style.overflow = "auto";
+        }
+    });
+
     // Stats Button Event Listener
     document.getElementById('statsButton').addEventListener('click', showStats);
 
@@ -115,6 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('click', event => {
         if (event.target == document.getElementById('statsModal')) {
+            document.getElementById('statsModal').style.display = 'none';
+            document.body.style.overflow = "auto";
+        }
+    });
+
+    // Close the modal when the Escape key is pressed
+    window.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
             document.getElementById('statsModal').style.display = 'none';
             document.body.style.overflow = "auto";
         }
@@ -176,21 +211,19 @@ function getRandomCards() {
     return selectedCards;
 }
 
+// Function to display random cards with fade-in effect and delay
 function displayRandomCards(cards) {
     const container = document.getElementById("cardContainer");
     container.style.display = 'grid';
     document.body.style.overflow = "hidden";
-    container.innerHTML = ''; // Clear previous cards
 
     cards.forEach((card, index) => {
-        // Delay each card's display by 300ms (adjust as needed)
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
             cardElement.innerHTML = `
                 <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
             `;
-
             container.appendChild(cardElement);
 
             // Trigger the fade-in effect by adding the 'visible' class to the card
@@ -198,7 +231,19 @@ function displayRandomCards(cards) {
                 cardElement.classList.add('visible');
             }, 20); // Small delay to ensure card is added to the DOM before the fade-in starts
         }, index * 300); // Delay between each card
+
+        // Store the timeout ID
+        timeouts.push(timeoutId);
     });
+}
+
+// Store timeout IDs to clear them when closing the popup
+let timeouts = [];
+
+// Clear all ongoing timeouts
+function clearTimeouts() {
+    timeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    timeouts = [];  // Reset the timeouts array
 }
 
 let charts = {}; // Keep track of chart instances
