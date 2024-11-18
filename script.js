@@ -155,14 +155,14 @@ async function parseURL() {
 
 // Randomly choose cards
 function getRandomCards() {
-    // Check if cachedData is empty
-    if (cachedData.length === 0) {
-        throw new Error('No cards available in cachedData.');
+    // Check if filteredCachedData is empty
+    if (filteredCachedData.length === 0) {
+        throw new Error('No cards available in Data.');
     }
 
-    // Randomly select 1 card if cachedData has less than 10 cards
+    // Randomly select 1 card if filteredCachedData has less than 10 cards
     let selectedCards = [];
-    let remainingCards = [...cachedData];
+    let remainingCards = [...filteredCachedData];
     
     // Draw only one card if there are fewer than 10 cards
     let numCardsToDraw = remainingCards.length < 10 ? 1 : 10;
@@ -476,6 +476,7 @@ function getPrice(card) {
 }
 
 let cachedData = [];
+let filteredCachedData = [];
 let currentQuery = '';
 let currentSearchMode = '';
 
@@ -552,6 +553,7 @@ function updateDisplay() {
     let filteredData = cachedData;
     if (rarityFilter) filteredData = filteredData.filter(card => card.rarity === rarityFilter);
     if (supertypeFilter) filteredData = filteredData.filter(card => card.supertype === supertypeFilter);
+    filteredCachedData = filteredData;
 
     const sortedData = sortCards(filteredData, sortOrder);
     const outputDiv = document.getElementById('output');
