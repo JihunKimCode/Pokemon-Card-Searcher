@@ -527,6 +527,11 @@ function compareIds(a, b, sortOrder) {
     return idA.suffix.localeCompare(idB.suffix) * sortOrder;
 }
 
+// Show loading, cards, or error message
+const outputContainer = document.getElementById('outputContainer');
+const loader = document.getElementById('loader');
+const outputDiv = document.getElementById('output');
+
 async function fetchCards() {
     const queryInput = document.getElementById('searchQuery').value.trim();
     if (!queryInput) {
@@ -552,6 +557,11 @@ async function fetchCards() {
         }
 
         try {
+            outputDiv.innerHTML = '';
+            outputDiv.style.display = 'none';
+            outputContainer.style.display = 'flex'; 
+            loader.style.display = 'inline-flex';
+
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
 
@@ -565,7 +575,10 @@ async function fetchCards() {
             populateOptions(cachedData);
             updateDisplay();
         } catch (error) {
-            document.getElementById('output').innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            loader.style.display = 'none';
+            output.style.display = 'block';
+            output.classList.add('error');
+            output.innerHTML = `<p>Error: ${error.message}</p>`;    
             console.error('There has been a problem with your fetch operation:', error);
         }
     } else {
@@ -574,6 +587,9 @@ async function fetchCards() {
 }
 
 function updateDisplay() {
+    outputContainer.style.display = 'table'; 
+    loader.style.display = 'none';
+
     const sortOrder = document.getElementById('sortOrder').value;
     const rarityFilter = document.getElementById('rarityFilter').value;
     const supertypeFilter = document.getElementById('supertypeFilter').value;
@@ -585,32 +601,40 @@ function updateDisplay() {
 
     const sortedData = sortCards(filteredData, sortOrder);
     const outputDiv = document.getElementById('output');
+    outputDiv.style.display = 'grid';
     const isVisible = document.querySelector('#visibleButton i').classList.contains('fa-eye');
 
-    outputDiv.innerHTML = sortedData.length ? sortedData.map(card => `
-        <div class="card">
-            <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
-            <div class="cardInfo" style="display: ${isVisible ? 'block' : 'none'};">
-                <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(card.set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
-                    <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: pointer">
-                </a>
-                <p>
-                    <a href="${window.location.origin}${window.location.pathname}?searchMode=pokemonName&searchQuery=${encodeURIComponent(card.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
-                        <b>${card.name}</b>
+    if (sortedData.length) {
+        outputDiv.classList.remove('error');
+        outputDiv.innerHTML = sortedData.map(card => `
+            <div class="card">
+                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+                <div class="cardInfo" style="display: ${isVisible ? 'block' : 'none'};">
+                    <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(card.set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                        <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: pointer">
                     </a>
-                </p>
-                <p><i>Illus. ${
-                    card.artist && card.artist !== 'N/A' 
-                        ? `<a href="${window.location.origin}${window.location.pathname}?searchMode=artistName&searchQuery=${encodeURIComponent(card.artist)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
-                        ${card.artist}
-                        </a>`
-                        : 'N/A'
-                }</i></p>
-                <p>${card.set.releaseDate || 'N/A'}</p>
-                <p>${card.rarity || 'N/A'}</p>
-                <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>
-            </div>
-        </div>`).join('') : '<p class="error">No cards found for this query.</p>';
+                    <p>
+                        <a href="${window.location.origin}${window.location.pathname}?searchMode=pokemonName&searchQuery=${encodeURIComponent(card.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                            <b>${card.name}</b>
+                        </a>
+                    </p>
+                    <p><i>Illus. ${
+                        card.artist && card.artist !== 'N/A' 
+                            ? `<a href="${window.location.origin}${window.location.pathname}?searchMode=artistName&searchQuery=${encodeURIComponent(card.artist)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                            ${card.artist}
+                            </a>` 
+                            : 'N/A'
+                    }</i></p>
+                    <p>${card.set.releaseDate || 'N/A'}</p>
+                    <p>${card.rarity || 'N/A'}</p>
+                    <p>${card.tcgplayer?.url ? `<a href="${card.tcgplayer.url}" target="_blank">Avg $${getPrice(card) || 'N/A'}</a>` : `Avg $${getPrice(card) || 'N/A'}`}</p>
+                </div>
+            </div>`).join('');
+    } else {
+        outputDiv.style.display = 'block';
+        outputDiv.classList.add('error');
+        outputDiv.innerHTML = '<p>No cards found.</p>';
+    }
 }
 
 function sortCards(data, sortOrder) {
