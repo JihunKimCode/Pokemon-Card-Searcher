@@ -16,6 +16,7 @@
     --stat: #fff;
     --clear-button-hover: rgba(169, 169, 169, 0.5);
     --clear-button-active: rgba(169, 169, 169, 0.7);
+    --background-gradient: radial-gradient(circle closest-side, #000 90%, #0000);
 }
 
 .dark-mode {
@@ -36,6 +37,7 @@
     --stat: #ccc;
     --clear-button-hover: rgba(169, 169, 169, 0.5);
     --clear-button-active: rgba(169, 169, 169, 0.7);
+    --background-gradient: radial-gradient(circle closest-side, #fff 90%, #fff0);
 }
 
 body {
@@ -400,7 +402,7 @@ canvas {
     display: none;
     width: 60px;
     aspect-ratio: 2;
-    --_g: no-repeat radial-gradient(circle closest-side,#000 90%,#0000);
+    --_g: no-repeat var(--background-gradient);
     background: 
       var(--_g) 0%   50%,
       var(--_g) 50%  50%,
