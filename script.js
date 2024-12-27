@@ -539,7 +539,10 @@ async function fetchCards() {
         return;
     }
 
-    const query = queryInput.replace(/ /g, '.');
+    let query = queryInput.replace(/ /g, '.');
+    if (query.includes(':')) query = query.split(':')[0];       // Celebrations: Classic Collection
+    else if (query.includes('—')) query = query.split('—')[1];  // HS—Undaunted, HS—Unleashed, and HS—Triumphant
+
     const searchMode = document.getElementById('searchQuery').placeholder;
 
     if (query !== currentQuery || searchMode !== currentSearchMode) {
