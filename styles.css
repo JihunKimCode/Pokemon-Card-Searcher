@@ -292,6 +292,28 @@ canvas {
     background-color: var(--gray);
 }
 
+#pokemonDropdown {
+    display: none;
+    position: absolute;
+    width: 100%;
+    margin-left: 5px;
+    background-color: #fff;
+    max-height: 190px;
+    overflow-y: auto;
+    z-index: 999;
+    top: calc(100% - 2px); /* Position the dropdown below the search input */
+    width: 189px;
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
+}
+
+#pokemonDropdown div{
+    padding: 10px;
+    cursor: pointer;
+}
+
+#pokemonDropdown div.active {
+    background-color: #ddd;
+}
 
 .searcher {
     position: relative;
@@ -304,15 +326,15 @@ canvas {
 
 #clearButton {
     display: none;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     text-align: center;
-    line-height: 20px;
-    background-color: transparent;
+    line-height: 0px;
+    background-color: #fff;
 
     position: absolute;
     top: 50%;
-    right: 5px;
+    right: 0px;
     transform: translateY(-50%);
     padding: 0;
     cursor: pointer;
@@ -600,6 +622,12 @@ footer a:hover{
 
     #clearButton {
         top: 37%;
+    }
+
+    #pokemonDropdown{
+        margin-left: 0px;
+        top: calc(100% - 7px);
+        width: calc(100% - 32px);
     }
 
     .options{

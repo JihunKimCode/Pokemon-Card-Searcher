@@ -33,14 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     pokemonNameBtn.addEventListener('click', () => {
         setActiveButton(pokemonNameBtn);
         setSearchPlaceholder("Enter Card Name");
+        names = pokemonNames;
     });
     artistNameBtn.addEventListener('click', () => {
         setActiveButton(artistNameBtn);
         setSearchPlaceholder("Enter Artist Name");
+        names = artistNames;
     });
     setListBtn.addEventListener('click', () => {
         setActiveButton(setListBtn);
         setSearchPlaceholder("Enter Expansion Name");
+        names = setNames;
     });
 
     // Change search mode using keyboard
@@ -48,12 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.altKey && event.key === '1') {
             setActiveButton(pokemonNameBtn);
             setSearchPlaceholder("Enter Card Name");
+            names = pokemonNames;
         } else if (event.altKey && event.key === '2') {
             setActiveButton(artistNameBtn);
             setSearchPlaceholder("Enter Artist Name");
+            names = artistNames;
         } else if (event.altKey && event.key === '3') {
             setActiveButton(setListBtn);
             setSearchPlaceholder("Enter Expansion Name");
+            names = setNames;
         }
     });
 
@@ -64,6 +70,206 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('searchQuery').focus();
         }
     });
+
+    // Search Dropdown Highlight
+    let currentFocus = -1;
+
+    // Pokemon Dropdown Suggestion
+    const pokemonDropdown = document.getElementById('pokemonDropdown');
+    
+    let pokemonNames = [];  // Not supported yet.
+    let artistNames = [];   // Not supported yet.
+    let setNames = [];
+    
+    // Take set name list
+    fetch("https://api.pokemontcg.io/v2/sets")
+    .then(response => response.json())
+    .then(data => {
+        setNames = data.data.map(set => set.name);
+    })
+    .catch(console.error);
+    
+    let names = [];
+    searchQuery.addEventListener('input', () => {
+        if (searchQuery.value.length >= 1) {
+            suggestPokemon(names);
+            clearButton.style.display = 'block';
+        } else {
+            // Hide dropdown if input is empty
+            pokemonDropdown.style.display = 'none';
+            clearButton.style.display = 'none';
+        }
+    });
+
+    searchQuery.addEventListener('keydown', handleKeydown);
+    searchQuery.addEventListener('click', () => {
+        if (searchQuery.value.length >= 1) {
+            suggestPokemon(names);
+            clearButton.style.display = 'block';
+        } else {
+            // Hide dropdown if input is empty
+            pokemonDropdown.style.display = 'none';
+            clearButton.style.display = 'none';
+        }
+        scrollIntoView();
+    });
+
+    if(pokemonDropdown){
+        // Hide the dropdown when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (!event.target.matches(`#${searchQuery.id}`)) {
+                pokemonDropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // Function to calculate Levenshtein distance between two strings
+    function levenshteinDistance(str1, str2) {
+        const lenStr1 = str1.length + 1;
+        const lenStr2 = str2.length + 1;
+
+        // Create a matrix to store the distances
+        const matrix = new Array(lenStr1);
+        for (let i = 0; i < lenStr1; i++) {
+            matrix[i] = new Array(lenStr2);
+            matrix[i][0] = i;
+        }
+
+        for (let j = 0; j < lenStr2; j++) {
+            matrix[0][j] = j;
+        }
+
+        // Fill in the matrix with the minimum distances
+        for (let i = 1; i < lenStr1; i++) {
+            for (let j = 1; j < lenStr2; j++) {
+                const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j] + 1,       // deletion
+                    matrix[i][j - 1] + 1,       // insertion
+                    matrix[i - 1][j - 1] + cost // substitution
+                );
+            }
+        }
+
+        // The bottom-right cell of the matrix contains the Levenshtein distance
+        return matrix[lenStr1 - 1][lenStr2 - 1];
+    }
+
+    // Function to suggest Pokémon with flexible matching and sort by relevance
+    function suggestPokemon(pokemonNames) {
+        const searchTerm = searchQuery.value.toLowerCase().trim();
+
+        // Escape special characters in the search term
+        const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        // Create a regular expression for flexible matching
+        const regex = new RegExp(escapedSearchTerm.split('').join('.*'));
+
+        // Filter Pokémon names based on the user's input and flexible matching
+        const suggestions = pokemonNames.filter(name =>
+            name.toLowerCase().match(regex)
+        );
+
+        // Sort suggestions by Levenshtein distance and then alphabetically
+        const sortedSuggestions = suggestions.sort((a, b) => {
+            const distanceA = levenshteinDistance(a, searchTerm);
+            const distanceB = levenshteinDistance(b, searchTerm);
+
+            if (distanceA !== distanceB) {
+                return distanceA - distanceB;
+            } else {
+                return a.localeCompare(b);
+            }
+        });
+        
+        updateDropdown(sortedSuggestions);
+    }
+
+    // Update the dropdown with suggestions
+    function updateDropdown(suggestions) {
+        pokemonDropdown.innerHTML = '';
+
+        // Populate the dropdown with new suggestions
+        suggestions.forEach((name, index) => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.textContent = name;
+            suggestionItem.addEventListener('click', () => {
+                // Set the selected suggestion in the search input and perform search
+                searchQuery.value = name;
+                pokemonDropdown.style.display = 'none';
+                fetchCards();
+            });
+
+            // Highlight the suggestion on hover
+            suggestionItem.addEventListener('mouseover', () => {
+                currentFocus = index;
+                addActive();
+            });
+
+            // Remove highlight when mouse moves away
+            suggestionItem.addEventListener('mouseout', () => {
+                currentFocus = -1;
+                addActive();
+            });
+
+            pokemonDropdown.appendChild(suggestionItem);
+        });
+
+        // Display the dropdown if there are suggestions, otherwise hide it
+        pokemonDropdown.style.display = suggestions.length > 0 ? 'block' : 'none';
+        currentFocus = -1; // Reset the focus when updating the suggestions
+
+        scrollIntoView();
+    }
+
+    // Manage Key Input (Down, Up, Enter)
+    function handleKeydown(event) {
+        const suggestions = document.querySelectorAll('#pokemonDropdown div');
+
+        if (event.key === 'ArrowDown' && suggestions.length > 0 && searchQuery.value.length >= 1) {
+            currentFocus = (currentFocus + 1) % suggestions.length;
+            searchQuery.value = suggestions[currentFocus].textContent;
+            addActive();
+        } else if (event.key === 'ArrowUp' && suggestions.length > 0 && searchQuery.value.length >= 1) {
+            if (currentFocus === -1) {
+                currentFocus = suggestions.length - 1;
+            } else {
+                currentFocus = (currentFocus - 1 + suggestions.length) % suggestions.length;
+            }
+            searchQuery.value = suggestions[currentFocus].textContent;
+            addActive();
+        } else if (event.key === 'Enter') {
+            if (currentFocus > -1) {
+                pokemonDropdown.innerHTML = '';
+                pokemonDropdown.style.display = 'none';
+            }
+        }
+        scrollIntoView();
+    }
+
+    // Change menu color when highlighted
+    function addActive() {
+        const suggestions = document.querySelectorAll('#pokemonDropdown div');
+        
+        suggestions.forEach((item, index) => {
+            if (index === currentFocus) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+        scrollIntoView();
+    }
+
+    // Adjust the scroll position to make the focused suggestion visible
+    function scrollIntoView() {
+        const activeItem = document.querySelector('#pokemonDropdown div.active');
+        if (activeItem) {
+            activeItem.scrollIntoView({
+                block: 'nearest',
+            });
+        }
+    }
 
     // Scroll to Top button
     const scrollTopBtn = document.getElementById("scrollTopBtn");
@@ -413,6 +619,8 @@ function darkmode() {
 
 function clearSearchQuery() {
     document.getElementById("searchQuery").value = "";
+    pokemonDropdown.style.display = 'none';
+    currentFocus = -1;
     toggleClearButton();
 }
 
