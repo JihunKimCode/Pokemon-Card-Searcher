@@ -369,7 +369,7 @@ canvas {
 .card {
     border: none;
     border-radius: 5px;
-    background-color: var(--background);
+    /* background-color: var(--background); */
     text-align: center;
     width: 200px;
 }
