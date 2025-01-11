@@ -29,10 +29,11 @@
     </h1>
     <div class="searchTools">
         <div class="container">
-            <button id="drawButton" title="Draw random cards"><i class="fa-solid fa-clover"></i></button>
-            <button id="statsButton" title="Show card stats"><i class="fa-solid fa-chart-column"></i></button>
-            <button id="linkButton" title="Copy hyperlink"><i class="fa-solid fa-link"></i></button>
-            <button id="visibleButton" title="Toggle card info"><i class="fa-solid fa-eye"></i></button>
+            <button class="feature" id="csvButton" title="Open CSV Info"><i class="fa-solid fa-file-csv"></i></button>
+            <button class="feature" id="drawButton" title="Draw random cards"><i class="fa-solid fa-clover"></i></button>
+            <button class="feature" id="statsButton" title="Show card stats"><i class="fa-solid fa-chart-column"></i></button>
+            <button class="feature" id="linkButton" title="Copy hyperlink"><i class="fa-solid fa-link"></i></button>
+            <button class="feature" id="visibleButton" title="Toggle card info"><i class="fa-solid fa-eye"></i></button>
             <div class="search-options">
                 <button id="pokemonNameBtn" class="active">Card</button>
                 <button id="artistNameBtn">Artist</button>
@@ -75,6 +76,12 @@
     <div id="loader"></div>
     <div id="output"></div>
 </div>
+<div id="csvData" class="csvCards">
+    <div class="csv-content">
+        <span class="close">&times;</span>
+        <div id="csvContainer"></div>
+    </div>
+</div>
 <div id="luckyDraw" class="draw">
     <div class="draw-content">
         <span class="close">&times;</span>
@@ -107,6 +114,13 @@
     <span class="close">&times;</span>
     <img class="popup-content" id="popupImage" alt="Popup Image">
 </div>
+<div class="controlCSV">
+    <div id="countButton" class="count"><span>0</span></div>
+    <div id="addCSV" class="csv" title="Add to CSV"><i class="fa-solid fa-file-circle-plus"></i></div>
+    <div id="removeCSV" class="csv" title="Remove from CSV"><i class="fa-solid fa-file-circle-minus"></i></div>
+</div>
+<div id="exportCSV" class="csv" title="Download CSV"><i class="fa-solid fa-file-arrow-down"></i></div>
+<div id="undoButton" class="undo"><i class="fa-solid fa-rotate-left"></i></div>
 <button id="scrollTopBtn" title="Go to top"><i class="fa-solid fa-chevron-up"></i></button>
 </body>
 <footer>

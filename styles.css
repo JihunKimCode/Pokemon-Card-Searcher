@@ -147,9 +147,9 @@ h1 a{
     display: flex;
 }
 
-#drawButton, #linkButton, #visibleButton, #statsButton{
+.feature{
     display: flex;
-    margin-right: 9px;
+    margin-right: 5px;
     height: 25px;
     align-items: center;
     border-radius: 5px;
@@ -158,12 +158,12 @@ h1 a{
     cursor: pointer;
 }
 
-#drawButton:hover, #linkButton:hover, #visibleButton:hover, #statsButton:hover{
+.feature:hover{
     background-color: var(--gray);
 }
 
 /* Styles for draw */
-.draw{
+.draw, .csvCards{
     display: none;
     position: fixed;
     z-index: 1000;
@@ -175,7 +175,7 @@ h1 a{
     background-color: var(--popup);
 }
 
-.draw-content{
+.draw-content, .csv-content{
     background-color: var(--stat);
     margin: 3% auto;
     padding: 20px;
@@ -184,7 +184,7 @@ h1 a{
     width: 80%;
 }
 
-#cardContainer{
+#cardContainer, #csvContainer{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 10px;
@@ -276,7 +276,7 @@ canvas {
 }
 
 .search-options button {
-    padding: 5px 10px;
+    padding: 5px 8px;
     border: none;
     background-color: var(--light-gray);
     border-radius: 5px;
@@ -285,7 +285,7 @@ canvas {
 
 /*No margin for last item*/
 .search-options button:not(:last-child) {
-    margin-right: 9px;
+    margin-right: 5px;
 }
 
 .search-options button.active {
@@ -372,6 +372,7 @@ canvas {
     /* background-color: var(--background); */
     text-align: center;
     width: 200px;
+    position: relative; /* Enables positioning child elements like the badge relative to this container */
 }
 
 .card img {
@@ -397,6 +398,135 @@ canvas {
 
 .cardInfo {
     display: block;
+}
+
+/* manage CSV cards */
+.controlCSV{
+    display: inline-flex;
+    position: fixed;
+    flex-direction: column;
+    gap: 10px;
+    top: 20%;
+    z-index: 9999;
+}
+
+.csv, .count, .undo{
+    display: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: white;
+    border: none;
+}
+
+.csv{
+    background-color: #aaa;
+    cursor: pointer;
+}
+
+.csv:hover{
+    background-color: var(--gray-hover);
+}
+
+.csv:active{
+    background-color: var(--gray);
+}
+
+#exportCSV{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#removeCSV{
+    bottom: 80px;
+}
+
+.csvCards .card{
+    position: relative;
+}
+
+#undoButton{
+    color: white;
+    cursor: pointer;
+}
+
+#undoButton:hover{
+    background-color: #006400;
+}
+
+#undoButton:active{
+    background-color: #7CCD7C;
+}
+
+.undo{
+    position: fixed;
+    bottom: 20px;
+    right: 80px;
+}
+
+.count, .undo{
+    background-color: #228B22;
+    user-select: none;
+    cursor: default;
+    z-index: 1000;
+}
+
+.count span {
+    position: relative;
+}
+
+.remove-card-btn, .cart-badge, .count-badge {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 2;
+    width: 25px;
+    height: 25px;
+}
+
+/* Remove button in csv*/
+.remove-card-btn {
+    top: -3%;
+    left: 97%;
+    transform: translateX(-50%);
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.remove-card-btn:hover {
+    background-color: #f58a7a;
+}
+
+.remove-card-btn:active {
+    background-color: #c0392b;
+}
+
+.cart-badge, .count-badge{
+    top: 5px;
+    left: 5px;
+    color: #fff;
+    border: 2px solid white;
+    cursor: default;
+    user-select: none;
+}
+
+.cart-badge{
+    background-color: #228B22;
+}
+
+.count-badge{
+    background-color: #000;
 }
 
 /* For the cards in the draw popup container */
@@ -650,7 +780,7 @@ footer a:hover{
         margin-right: 0px;
     }
 
-    #cardContainer{
+    #cardContainer, #csvContainer{
         width: 100%;
         grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
         row-gap: 5px;

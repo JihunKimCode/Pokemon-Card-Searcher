@@ -411,7 +411,9 @@ function displayRandomCards(cards) {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
             cardElement.innerHTML = `
-                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" 
+                onclick="showPopup('${card.images.large.replace(/'/g, "\\'")}', '${card.images.small.replace(/'/g, "\\'")}', '${card.set.name.replace(/'/g, "\\'")}', '${card.number.replace(/'/g, "\\'")}')" 
+                style="cursor: zoom-in">
             `;
             container.appendChild(cardElement);
 
@@ -819,7 +821,8 @@ function updateDisplay() {
         outputDiv.classList.remove('error');
         outputDiv.innerHTML = sortedData.map(card => `
             <div class="card">
-                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large}', '${card.name.replace(/'/g, '’')}')" style="cursor: zoom-in">
+                ${getNumCards(`${card.set.name},${card.number},${card.images.large},${card.images.small}\n`) > 0 ? `<div class="cart-badge"><i class="fa-solid fa-cart-shopping"></i></div>` : ""}
+                <img src="${card.images.small}" alt="${card.name}" title="${card.name}" onclick="showPopup('${card.images.large.replace(/'/g, "\\'")}', '${card.images.small.replace(/'/g, "\\'")}', '${card.set.name.replace(/'/g, "\\'")}', '${card.number.replace(/'/g, "\\'")}')" style="cursor: zoom-in">
                 <div class="cardInfo" style="display: ${isVisible ? 'block' : 'none'};">
                     <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(card.set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
                         <img src="${card.set.images.logo}" alt="${card.set.name}" title="${card.set.name}" style="width: 100px; cursor: pointer">
@@ -875,27 +878,298 @@ function sortCards(data, sortOrder) {
     });
 }
 
-function showPopup(image, name) {
+// Update controlCSV location as resize screen
+if (getComputedStyle(document.getElementById('popupImage')).display === "block") {
+    window.addEventListener('resize', addCardsToCSV);
+}
+
+// Update controlCSV position based on popupImage's position
+function addCardsToCSV() {
+    const popupImage = document.getElementById('popupImage');
+    const popupRect = popupImage.getBoundingClientRect();
+    const controlCSV = document.querySelector('.controlCSV');
+    
+    if (window.innerWidth < 767) {
+        controlCSV.style.top = `${popupRect.top}px`;
+        controlCSV.style.left = `${popupRect.right - 40}px`;
+    } else {
+        controlCSV.style.top = `${popupRect.top}px`;
+        controlCSV.style.left = `${popupRect.right + 15}px`;
+    }
+}
+
+// Find Number of Cards in CSV
+function getNumCards(newEntry) {
+    const matches = csvContent.split("\n").filter(line => line === `${newEntry.replace("\n","")}`);
+    return matches.length;
+}
+
+function showPopup(image, smallImage, sets, number) {
     const popup = document.getElementById('popup');
     const popupImage = document.getElementById('popupImage');
-
+    const addCSV = document.getElementById('addCSV');
+    const removeCSV = document.getElementById('removeCSV');
+    const count = document.getElementById('countButton');
+    
+    // Total number of cards in the set
+    count.style.display = 'flex';
+    const newEntry = `${sets},${number},${image},${smallImage}\n`;
+    const countSpan = count.querySelector('span');
+    countSpan.innerHTML = getNumCards(newEntry);
+    
     popup.style.display = "block";
     popupImage.src = image;
     document.body.style.overflow = "hidden";
+    addCSV.style.display = 'flex';
+    removeCSV.style.display = 'flex';
 
-    const close = document.getElementsByClassName('close')[1];
-    close.onclick = () => {
+    // Wait until image is loaded to adjust the controlCSV position
+    popupImage.onload = () => {
+        addCardsToCSV();    
+    };
+    
+    // Adding new data to CSV
+    addCSV.onclick = () => {
+        addCSV.style.pointerEvents = 'none'; // Disable clicks temporarily
+        addCSV.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+        addCSV.style.backgroundColor = '#aaa';
+    
+        // Re-enable the button after a small delay
+        setTimeout(() => {
+            // Set the success state
+            addCSV.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            addCSV.style.backgroundColor = '#228B22';
+
+            // Proceed with adding to csvContent
+            csvContent += newEntry;
+            countSpan.innerHTML = getNumCards(newEntry);
+    
+            // After a short time, revert to the original icon
+            setTimeout(() => {
+                addCSV.innerHTML = `<i class="fa-solid fa-file-circle-plus"></i>`;
+                addCSV.style.backgroundColor = '';
+                addCSV.style.pointerEvents = 'auto'; // Re-enable clicks
+            }, 250);
+        }, 150);
+    };
+
+    // Remove data from CSV
+    removeCSV.onclick = () => {
+        // Disable the button temporarily
+        removeCSV.style.pointerEvents = 'none'; // Disable clicks temporarily
+        removeCSV.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+        removeCSV.style.backgroundColor = '#aaa';
+    
+        // Re-enable the button after a small delay
+        setTimeout(() => {
+            // Set the success state
+            removeCSV.innerHTML = `<i class="fa-solid fa-check"></i>`;
+            removeCSV.style.backgroundColor = '#e74c3c';
+    
+            // Find the last occurrence of newEntry in csvContent
+            const lastIndex = csvContent.lastIndexOf(newEntry);
+            if (lastIndex !== -1) csvContent = csvContent.slice(0, lastIndex) + csvContent.slice(lastIndex + newEntry.length);
+
+            // Update the count based on the modified content
+            countSpan.innerHTML = getNumCards(newEntry);
+    
+            // After a short time, revert to the original icon
+            setTimeout(() => {
+                removeCSV.innerHTML = `<i class="fa-solid fa-file-circle-minus"></i>`;
+                removeCSV.style.backgroundColor = '';
+                removeCSV.style.pointerEvents = 'auto'; // Re-enable clicks
+            }, 250);
+        }, 150);
+    };
+      
+    document.querySelector('#popup .close').addEventListener('click', () => {
         popup.style.display = "none";
         document.body.style.overflow = "auto";
-    };
+        addCSV.style.display = 'none';
+        removeCSV.style.display = 'none';
+        count.style.display = 'none';
+        updateDisplay();
+        if (getComputedStyle(document.getElementById('csvData')).display === "block") displayCSV();
+    });
 
     window.onclick = event => {
         if (event.target == popup) {
             popup.style.display = "none";
             document.body.style.overflow = "auto";
+            addCSV.style.display = 'none';
+            removeCSV.style.display = 'none';
+            count.style.display = 'none';
+            updateDisplay();
+            if (getComputedStyle(document.getElementById('csvData')).display === "block") displayCSV();
         }
     };
 }
+
+// Manage CSV
+let csvContent = `Sets,Number,Image, smallImage\n`;
+
+// csvData Button Event Listener
+document.getElementById("csvButton").addEventListener("click", () => {
+    if (cachedData.length === 0) {
+        alert('Try this again later.');
+    } else {
+        // Clear the card container when closing the csvData
+        document.getElementById("csvContainer").innerHTML = ''; 
+        displayCSV(csvContent);
+        document.getElementById("csvData").style.display = "block";
+        document.getElementById('exportCSV').style.display = 'flex';
+        document.getElementById('undoButton').style.display = 'flex';
+    }
+});
+
+// csvData Close Event Listener
+document.querySelector('#csvData .close').addEventListener('click', () => {
+    document.getElementById("csvContainer").innerHTML = ''; 
+    document.getElementById("csvData").style.display = "none";
+    document.getElementById('exportCSV').style.display = 'none';
+    document.getElementById('undoButton').style.display = 'none';
+    document.body.style.overflow = "auto";
+    updateDisplay();
+});
+
+// Close if clicked outside the popup
+window.addEventListener('click', event => {
+    const csvData = document.getElementById('csvData');
+    if (event.target == csvData) {
+        document.getElementById("csvContainer").innerHTML = ''; 
+        csvData.style.display = 'none';
+        document.getElementById('exportCSV').style.display = 'none';
+        document.getElementById('undoButton').style.display = 'none';
+        document.body.style.overflow = "auto";
+        updateDisplay();
+    }
+});
+
+let removedRowsStack = [];  // Stack to store removed rows
+let cardCounts = {};        // Store card counts
+
+function displayCSV() {
+    const container = document.getElementById("csvContainer");
+    container.style.display = 'grid';
+    container.innerHTML = ''; // Clear the container first
+    document.body.style.overflow = "hidden";
+
+    // Split the CSV content into rows and filter out blank rows
+    let rows = csvContent.trim().split("\n").filter(row => row.trim() !== "");
+    const headers = rows.shift(); // Extract and store headers
+
+    // Group rows by unique card attributes
+    const cardCounts = {};
+    rows.forEach((row, rowIndex) => {
+        const columns = row.split(",").map(col => col.trim());
+        const [sets, number, image, smallImage] = columns;
+
+        // Validate required fields
+        if (!sets || !number || !image || !smallImage) {
+            console.warn(`Skipping row due to missing fields: ${row}`);
+            return; // Skip invalid rows
+        }
+
+        const uniqueKey = `${sets}_${number}_${smallImage}`;
+
+        if (!cardCounts[uniqueKey]) {
+            cardCounts[uniqueKey] = { count: 0, rows: [], firstIndex: rowIndex };
+        }
+
+        cardCounts[uniqueKey].count += 1;
+        cardCounts[uniqueKey].rows.push({ row, index: rowIndex, columns });
+    });
+
+    // Render cards based on groups
+    Object.keys(cardCounts).forEach(uniqueKey => {
+        const { count, rows } = cardCounts[uniqueKey];
+        const { columns } = rows[0];
+        const [sets, number, image, smallImage] = columns;
+
+        // Create a card element for the grouped row
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.innerHTML = `
+            ${count > 1 ? `<div class="count-badge">${count}</div>` : ""}
+            <img src="${smallImage}" alt="${sets}" title="${sets}" 
+                onclick="showPopup('${image.replace(/'/g, "\\'")}', '${smallImage.replace(/'/g, "\\'")}', '${sets.replace(/'/g, "\\'")}', '${number.replace(/'/g, "\\'")}')" 
+                style="cursor: zoom-in">
+            <div>
+                <button class="csv remove-card-btn"><i class="fa-solid fa-minus"></i></button>
+            </div>
+        `;
+
+        // Append the card to the container
+        container.appendChild(cardElement);
+
+        // Attach a click listener to the "Remove" button
+        const removeButton = cardElement.querySelector('.remove-card-btn');
+        removeButton.addEventListener('click', () => {
+            // Remove a single instance of the grouped card
+            const removedRow = rows.pop();
+            removedRowsStack.push(removedRow);
+            
+            if (rows.length === 0) {
+                delete cardCounts[uniqueKey];
+                cardElement.remove();
+            } else {
+                cardElement.querySelector('.count-badge').textContent = rows.length;
+            }
+
+            // Update csvContent by removing the specific row
+            const updatedRows = csvContent.split("\n").filter(row => row.trim() !== "");    // Ensure trailing newlines are handled
+            updatedRows.splice(removedRow.index + 1, 1);                                    // +1 to skip the headers
+            csvContent = updatedRows.join("\n") + "\n";                                     // Ensure the final newline is added
+
+            // Re-render CSV after modification
+            displayCSV();
+        });
+    });
+}
+
+// Attach an event listener to the undo button
+document.getElementById("undoButton").addEventListener("click", () => {
+    if (removedRowsStack.length > 0) {
+        // Pop the most recently removed row from the stack
+        const { row, index, columns } = removedRowsStack.pop();
+        const [sets, number, image, smallImage] = columns;
+        const uniqueKey = `${sets}_${number}_${smallImage}`;
+
+        // Restore the removed row
+        if (!cardCounts[uniqueKey]) {
+            cardCounts[uniqueKey] = { count: 0, rows: [], firstIndex: index };
+        }
+        cardCounts[uniqueKey].count += 1;
+        cardCounts[uniqueKey].rows.push({ row, index, columns });
+
+        // Insert the removed row back into the CSV content at the correct position
+        const updatedRows = csvContent.split("\n"); // Do not trim to retain trailing newlines
+        updatedRows.splice(index + 1, 0, row);      // +1 to account for the headers
+        csvContent = updatedRows.join("\n") + "\n"; // Ensure the final newline is added
+
+        // Re-render CSV with the restored row
+        displayCSV();
+    } else {
+        alert("No actions to undo!");
+    }
+});
+
+// Move the exportCSV click event listener outside the forEach loop
+document.getElementById('exportCSV').addEventListener('click', () => {
+    // Convert CSV content into an array of rows
+    let rows = csvContent.trim().split("\n");   
+
+    // Extract only the first two columns and prepare new CSV content
+    let filteredCsvContent = rows
+    .map(row => row.split(",").slice(0, 2).join(",")) // Keep only the first two columns
+    .join("\n"); // Rejoin rows into CSV format
+
+    const blob = new Blob([filteredCsvContent], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "pokemoncards.csv";
+    link.click();        
+});
 
 // Rarity Order for sorting
 const rarityOrder = {
