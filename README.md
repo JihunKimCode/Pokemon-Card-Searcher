@@ -11,7 +11,7 @@ A simple webpage for those particularly interested in the Pokemon TCG illustrati
   - Store SearchQuery, Filter, and Sort Information
   - https://jihunkimcode.github.io/Pokemon-Card-Searcher/?searchMode=pokemonName&searchQuery=lapras&sortOrder=newest&supertypeFilter=&rarityFilter=
 - Hyperlink to Pokemon, artist, and expansion
-- Add Cards to CSV and download the CSV!
+- Manage Cards to add to CSV or remove from CSV and download the CSV
 ### Toggle Card Information
 ![lapras-notext](https://github.com/user-attachments/assets/a0e2e3eb-9a89-46b7-a51a-e7e3e5950b1a)
 ### Show Stats of Cards
