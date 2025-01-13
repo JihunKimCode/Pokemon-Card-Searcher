@@ -889,12 +889,20 @@ function addCardsToCSV() {
     const popupRect = popupImage.getBoundingClientRect();
     const controlCSV = document.querySelector('.controlCSV');
     
-    if (window.innerWidth < 767) {
+    if (window.innerWidth < 457) {
+        // mobile layout
+        controlCSV.style.top = `${popupRect.top - 60}px`;
+        controlCSV.style.left = `${popupRect.right - 170}px`;
+        controlCSV.style.flexDirection = 'row';
+    } else if(window.innerWidth >= 457 && window.innerWidth < 687){
+        // narrow side
         controlCSV.style.top = `${popupRect.top}px`;
-        controlCSV.style.left = `${popupRect.right - 40}px`;
+        controlCSV.style.left = `85%`;
+        controlCSV.style.flexDirection = 'column';
     } else {
         controlCSV.style.top = `${popupRect.top}px`;
         controlCSV.style.left = `${popupRect.right + 15}px`;
+        controlCSV.style.flexDirection = 'column';
     }
 }
 
