@@ -32,17 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pokemonNameBtn.addEventListener('click', () => {
         setActiveButton(pokemonNameBtn);
-        setSearchPlaceholder("Enter Card Name");
+        setSearchPlaceholder("Card Name");
         names = pokemonNames;
     });
     artistNameBtn.addEventListener('click', () => {
         setActiveButton(artistNameBtn);
-        setSearchPlaceholder("Enter Artist Name");
+        setSearchPlaceholder("Artist Name");
         names = artistNames;
     });
     setListBtn.addEventListener('click', () => {
         setActiveButton(setListBtn);
-        setSearchPlaceholder("Enter Expansion Name");
+        setSearchPlaceholder("Expansion Name");
         names = setNames;
     });
 
@@ -50,15 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', function(event) {
         if (event.altKey && event.key === '1') {
             setActiveButton(pokemonNameBtn);
-            setSearchPlaceholder("Enter Card Name");
+            setSearchPlaceholder("Card Name");
             names = pokemonNames;
         } else if (event.altKey && event.key === '2') {
             setActiveButton(artistNameBtn);
-            setSearchPlaceholder("Enter Artist Name");
+            setSearchPlaceholder("Artist Name");
             names = artistNames;
         } else if (event.altKey && event.key === '3') {
             setActiveButton(setListBtn);
-            setSearchPlaceholder("Enter Expansion Name");
+            setSearchPlaceholder("Expansion Name");
             names = setNames;
         }
     });
