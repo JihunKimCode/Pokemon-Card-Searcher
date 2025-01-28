@@ -290,6 +290,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Redraw Button click event listener
+    document.getElementById('redrawBtn').addEventListener('click', () => {
+        // Clear the card container
+        document.getElementById("cardContainer").innerHTML = ''; 
+        clearTimeouts();
+
+        const randomCards = getRandomCards();
+        displayRandomCards(randomCards);
+    });
+
     // Draw Button Event Listener
     document.getElementById("drawButton").addEventListener("click", () => {
         // Clear the card container when closing the popup
@@ -299,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayRandomCards(randomCards);
 
         document.getElementById("luckyDraw").style.display = "block";
+        document.getElementById('redrawBtn').style.display = 'flex';
     });
 
     // Draw Close Event Listener
@@ -308,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeouts();
 
         document.getElementById("luckyDraw").style.display = "none";
+        document.getElementById('redrawBtn').style.display = 'none';
         document.body.style.overflow = "auto";
     });
 
@@ -320,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeouts();
 
             luckyDraw.style.display = 'none';
+            document.getElementById('redrawBtn').style.display = 'none';
             document.body.style.overflow = "auto";
         }
     });
@@ -1162,7 +1175,7 @@ document.getElementById("undoButton").addEventListener("click", () => {
     }
 });
 
-// Move the exportCSV click event listener outside the forEach loop
+// ExportCSV click event listener
 document.getElementById('exportCSV').addEventListener('click', () => {
     // Convert CSV content into an array of rows
     let rows = csvContent.trim().split("\n");   

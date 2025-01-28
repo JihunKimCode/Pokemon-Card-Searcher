@@ -436,7 +436,14 @@ canvas {
     background-color: var(--gray);
 }
 
-#exportCSV{
+#redrawBtn{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#redrawBtn, #exportCSV{
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -451,16 +458,16 @@ canvas {
     position: relative;
 }
 
-#undoButton{
+#redrawBtn, #undoButton{
     color: white;
     cursor: pointer;
 }
 
-#undoButton:hover{
+#redrawBtn:hover, #undoButton:hover{
     background-color: #006400;
 }
 
-#undoButton:active{
+#redrawBtn:active, #undoButton:active{
     background-color: #7CCD7C;
 }
 
