@@ -792,16 +792,21 @@ async function fetchCards() {
             let hasMoreData = true;
 
             while (hasMoreData) {
-                const response = await fetch(`${url}&page=${currentPage}`);
-                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
-
-                const data = await response.json();
-                cachedData = cachedData.concat(data.data); // Append the data from this page
-
-                if (data.data.length < 250) {
-                    hasMoreData = false; // No more data if the current page has less data than page_size
-                } else {
-                    currentPage++;
+                try {
+                    const response = await fetch(`${url}&page=${currentPage}`);
+                    if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            
+                    const data = await response.json();
+                    cachedData.push(...data.data);
+            
+                    if (data.data.length < 250) {
+                        hasMoreData = false; // Stop fetching if the current page has fewer than 250 items
+                    } else {
+                        currentPage++;
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch data:', error);
+                    hasMoreData = false; // Stop fetching on error
                 }
             }
             
