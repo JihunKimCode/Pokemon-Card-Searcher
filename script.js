@@ -788,12 +788,27 @@ async function fetchCards() {
             outputContainer.style.display = 'flex'; 
             loader.style.display = 'inline-flex';
 
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            let currentPage = 1;
+            let hasMoreData = true;
 
-            const data = await response.json();
-            cachedData = data.data;
-
+            while (hasMoreData) {
+                try {
+                    const response = await fetch(`${url}&page=${currentPage}`);
+                    if (!response.ok) throw new Error(`Network error: ${response.statusText}`);
+            
+                    const { data } = await response.json();
+                    if (data.length === 0) {
+                        hasMoreData = false; // Stop fetching if no more data
+                    } else {
+                        cachedData.push(...data); // Append new data
+                        currentPage++;
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch data:', error);
+                    hasMoreData = false; // Stop fetching on error
+                }
+            }
+            
             // Sorting logic for setListBtn
             if (document.getElementById('setListBtn').classList.contains('active')) {
                 cachedData.sort((a, b) => compareIds(a, b, 1));
