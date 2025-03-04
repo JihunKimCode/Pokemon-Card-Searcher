@@ -290,53 +290,167 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let challengeMode = false;  // Flag for challenge mode
+    let originalCards = [];     // Store original cards
+
+    document.getElementById('getChallengeBtn').addEventListener('click', startChallenge);
+    
+    function shuffle(array) {
+        // Fisher-Yates Shuffle
+        for (let i = array.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+    
+    function toggleButton(disable) {
+        const challengeBtn = document.getElementById('getChallengeBtn');
+        challengeBtn.disabled = disable;
+        challengeBtn.classList.toggle('disabled', disable);
+    }    
+
+    // Get Challenge Button Click Event
+    function startChallenge() {
+        const container = document.getElementById("cardContainer");
+        const cards = Array.from(container.getElementsByClassName('card'));
+    
+        if (cards.length === 0) {
+            alert("No cards available. Draw cards first!");
+            return;
+        }
+    
+        toggleButton(true);         // Disable Get Challenge Button
+        challengeMode = true;    
+        originalCards = shuffle(cards).map(card => card.cloneNode(true));
+        container.innerHTML = '';   // Clear the container
+    
+        let challengeCards = originalCards.map((card, index) => {
+            let clonedCard = card.cloneNode(true);
+            let img = clonedCard.querySelector('img');
+    
+            // Hide the actual image with the mystery image
+            img.src = "https://images.pokemontcg.io/mcd18/4_hires.png";
+            img.style.cursor = "pointer";
+            img.title = '';
+            img.onclick = null; // Disable onclick event for showPopup during challenge mode
+    
+            clonedCard.addEventListener('click', () => revealCard(index, container, challengeCards));
+    
+            return clonedCard;
+        });
+    
+        challengeCards.forEach(card => container.appendChild(card));
+    };
+    
+    function revealCard(index, container, challengeCards) {
+        if (!challengeMode) return;
+    
+        // Get the clicked card element
+        const clickedCard = challengeCards[index];
+    
+        // Ensure the clicked card is brought to the front during the transformation
+        clickedCard.style.transition = 'transform 0.3s ease, z-index 0s';
+        clickedCard.style.transform = 'scale(1.5)';
+        clickedCard.style.zIndex = '1000';
+
+        // Reveal the image by replacing the mystery image with the original one
+        setTimeout(() => {
+            clickedCard.querySelector('img').src = originalCards[index].querySelector('img').src;
+            
+        // After revealing the image, reset the scaling
+        setTimeout(() => {
+            clickedCard.style.transform = 'scale(1.0)';
+
+            // Wait for the transform transition to complete before resetting zIndex
+            clickedCard.addEventListener('transitionend', function resetZIndex(event) {
+                if (event.propertyName === 'transform') {
+                    clickedCard.style.zIndex = '';
+                    clickedCard.removeEventListener('transitionend', resetZIndex);
+                }
+            });
+        }, 500);
+    
+        }, 100); // Delay before revealing the image to make sure the scaling effect happens first
+    
+        let revealIndex = 0;
+        let revealInterval = setInterval(() => {
+            if (revealIndex < challengeCards.length) {
+                challengeCards[revealIndex].querySelector('img').src = originalCards[revealIndex].querySelector('img').src;
+                revealIndex++;
+            } else {
+                clearInterval(revealInterval);
+                endChallenge(container);
+            }
+        }, 100);
+    }
+    
+    function endChallenge(container) {
+        challengeMode = false;
+    
+        toggleButton(false);        // Enable Get Challenge Button
+        container.innerHTML = '';   // Clear challenge cards
+    
+        // Restore original cards (with the original image and onclick event)
+        originalCards.forEach(card => {
+            let clonedCard = card.cloneNode(true); // Clone the original card to avoid modifying the original one
+            let img = clonedCard.querySelector('img');
+            
+            // Restore the original onclick event
+            const originalOnClick = img.getAttribute('onclick');
+            img.setAttribute('onclick', originalOnClick); // Re-attach the original onclick event
+    
+            // Add the restored card back to the container
+            container.appendChild(clonedCard);
+        });
+    }
+        
     // Redraw Button click event listener
     document.getElementById('redrawBtn').addEventListener('click', () => {
-        // Clear the card container
-        document.getElementById("cardContainer").innerHTML = ''; 
+        document.getElementById("cardContainer").innerHTML = '';
         clearTimeouts();
-
+    
         const randomCards = getRandomCards();
         displayRandomCards(randomCards);
     });
-
+    
     // Draw Button Event Listener
     document.getElementById("drawButton").addEventListener("click", () => {
-        // Clear the card container when closing the popup
-        document.getElementById("cardContainer").innerHTML = ''; 
-
+        document.getElementById("cardContainer").innerHTML = '';
+    
         const randomCards = getRandomCards();
         displayRandomCards(randomCards);
-
+    
         document.getElementById("luckyDraw").style.display = "block";
         document.getElementById('redrawBtn').style.display = 'flex';
+        document.getElementById('getChallengeBtn').style.display = 'flex';
     });
-
+    
     // Draw Close Event Listener
     document.querySelector('#luckyDraw .close').addEventListener('click', () => {
-        // Clear the card container when closing the popup
-        document.getElementById("cardContainer").innerHTML = ''; 
+        document.getElementById("cardContainer").innerHTML = '';
         clearTimeouts();
-
+    
         document.getElementById("luckyDraw").style.display = "none";
         document.getElementById('redrawBtn').style.display = 'none';
+        document.getElementById('getChallengeBtn').style.display = 'none';
         document.body.style.overflow = "auto";
     });
-
+    
     // Close if clicked outside the popup
     window.addEventListener('click', event => {
         const luckyDraw = document.getElementById('luckyDraw');
         if (event.target == luckyDraw) {
-            // Clear the card container when closing the popup
-            document.getElementById("cardContainer").innerHTML = ''; 
+            document.getElementById("cardContainer").innerHTML = '';
             clearTimeouts();
-
+    
             luckyDraw.style.display = 'none';
             document.getElementById('redrawBtn').style.display = 'none';
+            document.getElementById('getChallengeBtn').style.display = 'none';
             document.body.style.overflow = "auto";
         }
     });
-
+        
     // Stats Button Event Listener
     document.getElementById('statsButton').addEventListener('click', showStats);
 
@@ -388,26 +502,32 @@ async function parseURL() {
 
 // Randomly choose cards
 function getRandomCards() {
-    // Check if filteredCachedData is empty
     if (filteredCachedData.length === 0) {
         alert('Search Cards First!');
         throw new Error('No cards available in Data.');
     }
 
-    // Randomly select cards
-    let selectedCards = [];
     let remainingCards = [...filteredCachedData];
-    
+
     // Draw only one card if there are fewer than 10 cards
-    let numCardsToDraw = remainingCards.length < 10 ? 1 : 10;
-    
+    let numCardsToDraw;
+
+    if (remainingCards.length < 5) {
+        numCardsToDraw = 1;
+    } else if (remainingCards.length < 10) {
+        numCardsToDraw = 5;
+    } else {
+        numCardsToDraw = 10;
+    }
+
+    let selectedCards = [];
+
     for (let i = 0; i < numCardsToDraw; i++) {
         let randomIndex = Math.floor(Math.random() * remainingCards.length);
         selectedCards.push(remainingCards[randomIndex]);
-        remainingCards.splice(randomIndex, 1); // Remove the selected card
+        remainingCards.splice(randomIndex, 1);
     }
 
-    // Sort the selected cards by rarity
     selectedCards.sort((a, b) => (rarityOrder[a.rarity] || 0) - (rarityOrder[b.rarity] || 0));
 
     return selectedCards;
@@ -419,35 +539,46 @@ function displayRandomCards(cards) {
     container.style.display = 'grid';
     document.body.style.overflow = "hidden";
 
+    // Prevent clicking the challenge button while displaying cards
+    const challengeBtn = document.getElementById('getChallengeBtn');
+    challengeBtn.classList.add('disabled');             // Add a disabled class to style it
+    challengeBtn.onclick = (e) => e.preventDefault();   // Prevent clicking the button during animation
+
+    let completedCount = 0; // Track completed animations
+
     cards.forEach((card, index) => {
         const timeoutId = setTimeout(() => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('card');
-            cardElement.innerHTML = `
+            cardElement.innerHTML = ` 
                 <img src="${card.images.small}" alt="${card.name}" title="${card.name}" 
                 onclick="showPopup('${card.images.large.replace(/'/g, "\\'")}', '${card.images.small.replace(/'/g, "\\'")}', '${card.set.name.replace(/'/g, "\\'")}', '${card.number.replace(/'/g, "\\'")}')" 
                 style="cursor: zoom-in">
             `;
             container.appendChild(cardElement);
 
-            // Trigger the fade-in effect by adding the 'visible' class to the card
+            // After card is added, trigger the fade-in
             setTimeout(() => {
                 cardElement.classList.add('visible');
-            }, 20); // Small delay to ensure card is added to the DOM before the fade-in starts
-        }, index * 300); // Delay between each card
+                completedCount++;
 
-        // Store the timeout ID
-        timeouts.push(timeoutId);
+                // Re-enable the challenge button once all cards are visible
+                if (completedCount === cards.length) {
+                    challengeBtn.classList.remove('disabled');  // Remove the disabled class
+                    challengeBtn.onclick = null;                // Re-enable clicking functionality
+                }
+            }, 20);                 // Short delay to ensure visibility transition
+        }, index * 300);            // Delay each card by 300ms
+
+        timeouts.push(timeoutId);   // Store the timeout ID (optional, if you want to clear them)
     });
 }
 
-// Store timeout IDs to clear them when closing the popup
-let timeouts = [];
+let timeouts = []; // Store timeouts
 
-// Clear all ongoing timeouts
 function clearTimeouts() {
-    timeouts.forEach(timeoutId => clearTimeout(timeoutId));
-    timeouts = [];  // Reset the timeouts array
+    timeouts.forEach(clearTimeout);
+    timeouts = [];
 }
 
 let charts = {}; // Keep track of chart instances
@@ -1145,6 +1276,7 @@ function displayCSV() {
             // Remove a single instance of the grouped card
             const removedRow = rows.pop();
             removedRowsStack.push(removedRow);
+            document.getElementById("undoButton").classList.remove("off");
             
             if (rows.length === 0) {
                 delete cardCounts[uniqueKey];
@@ -1171,18 +1303,20 @@ document.getElementById("undoButton").addEventListener("click", () => {
         const { row, index, columns } = removedRowsStack.pop();
         const [sets, number, image, smallImage] = columns;
         const uniqueKey = `${sets}_${number}_${smallImage}`;
-
+        
         // Restore the removed row
         if (!cardCounts[uniqueKey]) {
             cardCounts[uniqueKey] = { count: 0, rows: [], firstIndex: index };
         }
         cardCounts[uniqueKey].count += 1;
         cardCounts[uniqueKey].rows.push({ row, index, columns });
-
+        
         // Insert the removed row back into the CSV content at the correct position
         const updatedRows = csvContent.split("\n"); // Do not trim to retain trailing newlines
         updatedRows.splice(index + 1, 0, row);      // +1 to account for the headers
         csvContent = updatedRows.join("\n") + "\n"; // Ensure the final newline is added
+        
+        if (removedRowsStack.length === 0) document.getElementById("undoButton").classList.add("off");
 
         // Re-render CSV with the restored row
         displayCSV();

@@ -411,7 +411,7 @@ canvas {
     z-index: 9999;
 }
 
-.csv, .count, .undo{
+.csv, .count, .act{
     display: none;
     border-radius: 50%;
     width: 50px;
@@ -423,16 +423,16 @@ canvas {
     border: none;
 }
 
-.csv{
+.csv, .act.off{
     background-color: #aaa;
     cursor: pointer;
 }
 
-.csv:hover{
+.csv:hover, .act.off:hover{
     background-color: var(--gray-hover);
 }
 
-.csv:active{
+.csv:active, .act.off:active{
     background-color: var(--gray);
 }
 
@@ -458,30 +458,35 @@ canvas {
     position: relative;
 }
 
-#redrawBtn, #undoButton{
+#getChallengeBtn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.act {
+    position: fixed;
+    bottom: 20px;
+    right: 80px;
     color: white;
     cursor: pointer;
 }
 
-#redrawBtn:hover, #undoButton:hover{
+.act:hover {
     background-color: #006400;
 }
 
-#redrawBtn:active, #undoButton:active{
+.act:active {
     background-color: #7CCD7C;
 }
 
-.undo{
-    position: fixed;
-    bottom: 20px;
-    right: 80px;
-}
-
-.count, .undo{
+.count, .act {
     background-color: #228B22;
     user-select: none;
-    cursor: default;
     z-index: 1000;
+}
+
+.count {
+    cursor: default;
 }
 
 .count span {
