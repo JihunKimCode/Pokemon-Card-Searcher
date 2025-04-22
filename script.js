@@ -1007,7 +1007,10 @@ function updateDisplay() {
     } else {
         outputDiv.style.display = 'block';
         outputDiv.classList.add('error');
-        outputDiv.innerHTML = '<p>No cards found.</p>';
+        outputDiv.innerHTML = `
+            <p class="error-msg">No cards found.</p>
+            <p class="error-msg">(Searched by ${currentSearchMode}.)</p>
+        `;
     }
 }
 

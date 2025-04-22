@@ -367,6 +367,11 @@ canvas {
     justify-items: center;
 }
 
+.error-msg{
+    margin-block-start: 7px;
+    margin-block-end: 3px;
+}
+
 .card {
     border: none;
     border-radius: 5px;
