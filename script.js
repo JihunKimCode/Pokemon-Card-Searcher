@@ -80,15 +80,82 @@ document.addEventListener('DOMContentLoaded', () => {
     let pokemonNames = [];  // Not supported yet.
     let artistNames = [];   // Not supported yet.
     let setNames = [];
-    
-    // Take set name list
-    fetch("https://api.pokemontcg.io/v2/sets")
-    .then(response => response.json())
-    .then(data => {
-        setNames = data.data.map(set => set.name);
-    })
-    .catch(console.error);
-    
+    let setInfos = [];      // For showing latest expansions
+
+    // Fetch All Expansions
+    async function fetchAllSets() {
+        const url = "https://api.pokemontcg.io/v2/sets?pageSize=250";
+        let currentPage = 1;
+        let hasMoreData = true;
+        let allSets = [];
+
+        // Get Expansions
+        while (hasMoreData) {
+            try {
+                const response = await fetch(`${url}&page=${currentPage}`);
+                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+
+                const data = await response.json();
+                allSets.push(...data.data);
+
+                if (data.data.length < 250) hasMoreData = false; // Stop fetching if the current page has fewer than 250 items
+                else currentPage++;
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+                hasMoreData = false; // Stop fetching on error
+            }
+        }
+
+        // Store Expansions
+        setNames = allSets.map(set => set.name);
+        setInfos = allSets
+            .map(set => ({
+                id: set.id,
+                name: set.name,
+                series: set.series,
+                releaseDate: set.releaseDate,
+                logo: set.images?.logo || "",
+                symbol: set.images?.symbol || ""
+            }))
+            .sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+
+        const searchQuery = new URLSearchParams(window.location.search).get('searchQuery');
+        if(!searchQuery) showExpansions(setInfos.slice(0, 4));
+    }
+
+    fetchAllSets();
+
+    // Show Latest Expansions
+    function showExpansions(sets){
+        // Remove Loading
+        loader.style.display = 'none';
+
+        // Set infoDiv
+        infoDiv.style.display = 'table';
+        infoDiv.innerHTML += `<h2>Latest Expansions</h2>`;
+        infoDiv.innerHTML += `<div id="expansions"></div>`;
+        
+        // Set expansionsDiv
+        const expansionsDiv = document.getElementById("expansions");
+        sets.forEach(set=>{
+            const div = document.createElement("div");
+            div.className = "expansion-item";
+
+            div.innerHTML = `
+            <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                <img src="${set.logo}" alt="${set.name}">
+            </a>
+            <div class="expansion-meta">
+                <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
+                    <strong><img src="${set.symbol}" alt="${set.name} symbol"> ${set.name}</strong>
+                </a>
+                <small>${set.series} • ${set.releaseDate}</small>
+            </div>
+            `;
+            expansionsDiv.appendChild(div);
+        })
+    }
+
     let names = [];
     searchQuery.addEventListener('input', () => {
         if (searchQuery.value.length >= 1) {
@@ -885,6 +952,7 @@ function compareIds(a, b, sortOrder) {
 const outputContainer = document.getElementById('outputContainer');
 const loader = document.getElementById('loader');
 const outputDiv = document.getElementById('output');
+const infoDiv = document.getElementById("info");
 
 async function fetchCards() {
     const queryInput = document.getElementById('searchQuery').value.trim();
@@ -914,6 +982,8 @@ async function fetchCards() {
         }
 
         try {
+            infoDiv.innerHTML = '';
+            infoDiv.style.display = 'none';
             outputDiv.innerHTML = '';
             outputDiv.style.display = 'none';
             outputContainer.style.display = 'flex'; 
@@ -960,6 +1030,8 @@ async function fetchCards() {
 }
 
 function updateDisplay() {
+    infoDiv.innerHTML = '';
+    infoDiv.style.display = 'none';
     outputContainer.style.display = 'table'; 
     loader.style.display = 'none';
 

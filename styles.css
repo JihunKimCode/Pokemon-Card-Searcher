@@ -393,12 +393,12 @@ canvas {
     color: var(--text);
 }
 
-.card a{
+.card a, .expansion-meta a{
     text-decoration: none;
     color: var(--text);
 }
 
-.card a:hover{
+.card a:hover, .expansion-meta a:hover{
     color: var(--dark-gray);
 }
 
@@ -568,8 +568,64 @@ canvas {
     justify-content: center;
 }
 
-#loader {
+#info{
+    width: 100%;
     display: none;
+    margin: 0px 5px;
+}
+
+#info h2{
+    width: 100%;
+    font-size: 28px;
+    display: inline-flex;
+    justify-content: center;
+    margin-top: 0px;
+}
+
+#expansions{
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
+    gap: 15px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-items: center;
+}
+
+.expansion-item img{
+    width: auto;
+    height: 100px;
+}
+
+.expansion-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.expansion-meta{
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.expansion-meta img{
+    width: 30px;
+    height: auto;
+}
+
+.expansion-meta strong{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#loader {
+    display: inline-flex;
     width: 60px;
     aspect-ratio: 2;
     --_g: no-repeat var(--background-gradient);
@@ -714,6 +770,27 @@ footer a:hover{
         width: 100%;
         justify-content: flex-end;
     }
+    #expansions{
+        width: 100%;
+        grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+        column-gap: 5px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .expansion-item{
+        gap: 10px;
+    }
+    .expansion-item img{
+        width: 300px;
+        height: auto;
+    }
+    .expansion-meta{
+        align-items: flex-start;
+    }
+    .expansion-meta img{
+        width: 30px;
+        height: auto;
+    }
 }
 
 @media only screen and (max-width: 767px) {
@@ -796,6 +873,22 @@ footer a:hover{
         column-gap: 0px;
         margin-left: 0px;
         margin-right: 0px;
+    }
+
+    #info h2{
+        font-size: 24px;
+    }
+
+    #expansions{
+        display: flex;
+        flex-direction: column;
+    }
+    .expansion-item{
+        flex-direction: column;
+        justify-content: center;
+    }
+    .expansion-meta{
+        align-items: center;
     }
 
     #cardContainer, #csvContainer{
