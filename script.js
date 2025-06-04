@@ -119,8 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }))
             .sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
 
-        const searchQuery = new URLSearchParams(window.location.search).get('searchQuery');
-        if(!searchQuery) showExpansions(setInfos.slice(0, 4));
+        if(!hasSearched) showExpansions(setInfos.slice(0, 4));
     }
 
     fetchAllSets();
@@ -953,6 +952,7 @@ const outputContainer = document.getElementById('outputContainer');
 const loader = document.getElementById('loader');
 const outputDiv = document.getElementById('output');
 const infoDiv = document.getElementById("info");
+let hasSearched = false; // For determining displaying homepage
 
 async function fetchCards() {
     const queryInput = document.getElementById('searchQuery').value.trim();
@@ -961,6 +961,7 @@ async function fetchCards() {
         return;
     }
 
+    hasSearched = true;
     let query = queryInput.replace(/ /g, '.');
     if (query.includes(':')) query = query.split(':')[0];       // Celebrations: Classic Collection
     else if (query.includes('—')) query = query.split('—')[1];  // HS—Undaunted, HS—Unleashed, and HS—Triumphant
