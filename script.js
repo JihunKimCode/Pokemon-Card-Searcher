@@ -119,40 +119,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }))
             .sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
 
-        if(!hasSearched) showExpansions(setInfos.slice(0, 4));
+        if(!hasSearched) showExpansions(setInfos.slice(0, 4), setInfos.slice(4,12));
     }
 
     fetchAllSets();
 
-    // Show Latest Expansions
-    function showExpansions(sets){
-        // Remove Loading
+    // Show Expansions
+    function showExpansions(sets1, sets2) {
+        // Hide loader
         loader.style.display = 'none';
-
-        // Set infoDiv
+        // Set info container
         infoDiv.style.display = 'table';
-        infoDiv.innerHTML += `<h2>Latest Expansions</h2>`;
-        infoDiv.innerHTML += `<div id="expansions"></div>`;
-        
-        // Set expansionsDiv
-        const expansionsDiv = document.getElementById("expansions");
-        sets.forEach(set=>{
-            const div = document.createElement("div");
-            div.className = "expansion-item";
+        infoDiv.innerHTML = '';
 
-            div.innerHTML = `
-            <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
-                <img src="${set.logo}" alt="${set.name}">
-            </a>
-            <div class="expansion-meta">
-                <a href="${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=" target="_blank">
-                    <strong><img src="${set.symbol}" alt="${set.name} symbol"> ${set.name}</strong>
-                </a>
-                <small>${set.series} • ${set.releaseDate}</small>
-            </div>
-            `;
-            expansionsDiv.appendChild(div);
-        })
+        // Helper to create an expansion section
+        function createExpansionSection(title, sets) {
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.className = 'section-title';
+            sectionTitle.innerHTML = `<span>${title}</span>`;
+            infoDiv.appendChild(sectionTitle);
+
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'expansion';
+            infoDiv.appendChild(sectionDiv);
+
+            sets.forEach(set => {
+                const div = document.createElement('div');
+                div.className = 'expansion-item';
+
+                // Set hyperlink
+                const queryURL = `${window.location.origin}${window.location.pathname}?searchMode=setList&searchQuery=${encodeURIComponent(set.name)}&sortOrder=newest&supertypeFilter=&rarityFilter=`;
+
+                div.innerHTML = `
+                    <a href="${queryURL}">
+                        <img src="${set.logo}" alt="${set.name}">
+                    </a>
+                    <div class="expansion-meta">
+                        <a href="${queryURL}">
+                            <strong>
+                                <img src="${set.symbol}" alt="${set.name} symbol"> ${set.name}
+                            </strong>
+                        </a>
+                        <small>${set.series} • ${set.releaseDate}</small>
+                    </div>
+                `;
+                sectionDiv.appendChild(div);
+            });
+        }
+
+        // Create ExpansionsDiv
+        createExpansionSection('Recent Expansions', sets1);
+        createExpansionSection('Other Expansions', sets2);
     }
 
     let names = [];

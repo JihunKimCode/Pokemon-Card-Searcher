@@ -580,9 +580,36 @@ canvas {
     display: inline-flex;
     justify-content: center;
     margin-top: 0px;
+    margin-block-end: 20px;
 }
 
-#expansions{
+/*Section divider*/
+.section-title {
+    position: relative;
+    text-align: center;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--gray);
+    z-index: 0;
+}
+
+.section-title span {
+    position: relative;
+    background: var(--background);
+    color: var(--text);
+    padding: 0 1em;
+    z-index: 1;
+}
+
+/*Expansions*/
+.expansion{
     display: grid;
     width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
@@ -624,6 +651,7 @@ canvas {
     gap: 5px;
 }
 
+/*Loading*/
 #loader {
     display: inline-flex;
     width: 60px;
@@ -770,7 +798,7 @@ footer a:hover{
         width: 100%;
         justify-content: flex-end;
     }
-    #expansions{
+    .expansion{
         width: 100%;
         grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
         column-gap: 5px;
@@ -783,9 +811,6 @@ footer a:hover{
     .expansion-item img{
         width: 300px;
         height: auto;
-    }
-    .expansion-meta{
-        align-items: flex-start;
     }
     .expansion-meta img{
         width: 30px;
@@ -879,7 +904,7 @@ footer a:hover{
         font-size: 24px;
     }
 
-    #expansions{
+    .expansion{
         display: flex;
         flex-direction: column;
     }
