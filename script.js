@@ -816,7 +816,7 @@ document.getElementById('linkButton').addEventListener('click', () => {
     const url = generateURL(searchMode, searchQuery, sortOrder, supertypeFilter, rarityFilter);
     
     // Copy URL to clipboard
-    copyToClipboard(url);
+    copyToClipboard(url, 'Link copied to clipboard!');
 });
 
 // Function to generate URL with current search parameters
@@ -831,10 +831,10 @@ function generateURL(searchMode, searchQuery, sortOrder, supertypeFilter, rarity
 }
 
 // Function to copy text to clipboard
-function copyToClipboard(text) {
+function copyToClipboard(text, msg) {
     navigator.clipboard.writeText(text)
         .then(() => {
-            alert('Link copied to clipboard!');
+            alert(msg);
         })
         .catch(err => {
             console.error('Failed to copy: ', err);
@@ -1278,6 +1278,8 @@ document.getElementById("csvButton").addEventListener("click", () => {
         document.getElementById("csvContainer").innerHTML = ''; 
         displayCSV(csvContent);
         document.getElementById("csvData").style.display = "block";
+        document.getElementById('encodeHex').style.display = 'flex';
+        document.getElementById('encodeB64').style.display = 'flex';
         document.getElementById('exportCSV').style.display = 'flex';
         document.getElementById('undoButton').style.display = 'flex';
     }
@@ -1287,6 +1289,8 @@ document.getElementById("csvButton").addEventListener("click", () => {
 document.querySelector('#csvData .close').addEventListener('click', () => {
     document.getElementById("csvContainer").innerHTML = ''; 
     document.getElementById("csvData").style.display = "none";
+    document.getElementById('encodeHex').style.display = 'none';
+    document.getElementById('encodeB64').style.display = 'none';
     document.getElementById('exportCSV').style.display = 'none';
     document.getElementById('undoButton').style.display = 'none';
     document.body.style.overflow = "auto";
@@ -1299,6 +1303,8 @@ window.addEventListener('click', event => {
     if (event.target == csvData) {
         document.getElementById("csvContainer").innerHTML = ''; 
         csvData.style.display = 'none';
+        document.getElementById('encodeHex').style.display = 'none';
+        document.getElementById('encodeB64').style.display = 'none';
         document.getElementById('exportCSV').style.display = 'none';
         document.getElementById('undoButton').style.display = 'none';
         document.body.style.overflow = "auto";
@@ -1418,21 +1424,50 @@ document.getElementById("undoButton").addEventListener("click", () => {
     }
 });
 
-// ExportCSV click event listener
-document.getElementById('exportCSV').addEventListener('click', () => {
+function getFilteredCSVContent() {
     // Convert CSV content into an array of rows
-    let rows = csvContent.trim().split("\n");   
-
+    const rows = csvContent.trim().split("\n");
+    if (rows.length < 2) {
+        alert("There is no card!");
+        return null;
+    }
     // Extract only the first two columns and prepare new CSV content
-    let filteredCsvContent = rows
-    .map(row => row.split(",").slice(0, 2).join(",")) // Keep only the first two columns
-    .join("\n"); // Rejoin rows into CSV format
+    return rows
+        .map(row => row.split(",").slice(0, 2).join(",")) // Keep only the first two columns
+        .join("\n"); // Rejoin rows into CSV format
+}
 
-    const blob = new Blob([filteredCsvContent], { type: "text/csv" });
+// Encode to Hex
+document.getElementById('encodeHex').addEventListener('click', () => {
+    const filteredCsv = getFilteredCSVContent();
+    if (!filteredCsv) return;
+
+    const utf8Bytes = new TextEncoder().encode(filteredCsv);
+    const hexEncoded = Array.from(utf8Bytes)
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    copyToClipboard(hexEncoded, 'Hex copied to clipboard!');
+});
+
+// Encode to Base64
+document.getElementById('encodeB64').addEventListener('click', () => {
+    const filteredCsv = getFilteredCSVContent();
+    if (!filteredCsv) return;
+
+    const base64Encoded = btoa(unescape(encodeURIComponent(filteredCsv)));
+    copyToClipboard(base64Encoded, 'Base64 copied to clipboard!');
+});
+
+// Export CSV
+document.getElementById('exportCSV').addEventListener('click', () => {
+    const filteredCsv = getFilteredCSVContent();
+    if (!filteredCsv) return;
+
+    const blob = new Blob([filteredCsv], { type: "text/csv" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "pokemoncards.csv";
-    link.click();        
+    link.click();
 });
 
 // Rarity Order for sorting

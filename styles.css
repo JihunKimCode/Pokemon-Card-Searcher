@@ -101,12 +101,16 @@ h1 a{
     cursor: pointer;
 }
 
-.btn.btn-github, .btn.btn-dark {
+.btn.btn-github, .btn.btn-dark, .btn.btn-website {
     background-color: var(--button);
 }
 
 .btn.btn-github:hover, .btn.btn-dark:hover {
     color: var(--gray);
+}
+
+.btn.btn-website:hover img {
+    filter: brightness(1.2); /* Increase brightness */
 }
 
 #sortOrder, #rarityFilter, #supertypeFilter{
@@ -441,14 +445,19 @@ canvas {
     background-color: var(--gray);
 }
 
-#redrawBtn{
+#manageCSV{
+    cursor: pointer;
     position: fixed;
+    display: inline-flex;
+    flex-direction: row-reverse;
     bottom: 20px;
     right: 20px;
     z-index: 1000;
+    gap: 10px;
 }
 
-#redrawBtn, #exportCSV{
+#redrawBtn{
+    cursor: pointer;
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -468,7 +477,7 @@ canvas {
     pointer-events: none;
 }
 
-.act {
+#getChallengeBtn {
     position: fixed;
     bottom: 20px;
     right: 80px;

@@ -22,7 +22,7 @@
 
 <div class="header">
     <h1>
-        <a href="https://github.com/JihunKimCode/Pokemon-Card-Searcher" class="btn btn-github" rel="noopener noreferrer" aria-label="GitHub Repository">
+        <a href="https://github.com/JihunKimCode/Pokemon-Card-Searcher" class="btn btn-github" rel="noopener noreferrer" aria-label="GitHub Repository" title="GitHub">
             <i class="fa-brands fa-github"></i>
         </a>
         <a href="index.html">Pokémon Card Searcher</a>
@@ -122,15 +122,24 @@
     <div id="addCSV" class="csv" title="Add to CSV"><i class="fa-solid fa-file-circle-plus"></i></div>
     <div id="removeCSV" class="csv" title="Remove from CSV"><i class="fa-solid fa-file-circle-minus"></i></div>
 </div>
-<div id="exportCSV" class="act" title="Download CSV"><i class="fa-solid fa-file-arrow-down"></i></div>
-<div id="undoButton" class="act off"><i class="fa-solid fa-rotate-left"></i></div>
+<div id="manageCSV">
+    <div id="encodeHex" class="act" title="Copy Hex"><i class="fa-solid fa-h"></i></div>
+    <div id="encodeB64" class="act" title="Copy Base64"><i class="fa-solid fa-b"></i></div>
+    <div id="exportCSV" class="act" title="Download CSV"><i class="fa-solid fa-file-arrow-down"></i></div>
+    <div id="undoButton" class="act off"><i class="fa-solid fa-rotate-left"></i></div>
+</div>
 <button id="scrollTopBtn" title="Go to top"><i class="fa-solid fa-chevron-up"></i></button>
 </body>
 <footer>
     <div class="footerContent">
         <div class="footicons">
-            <a class="btn btn-dark" onclick="darkmode()" aria-label="Toggle Dark Mode">
+            <a class="btn btn-dark" onclick="darkmode()" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
                 <i class="fa-solid fa-circle-half-stroke"></i>
+            </a>
+        </div>
+        <div class="footicons">
+            <a href="https://jihunkimcode.github.io/Card-Storage-V2/" class="btn btn-website" rel="noopener noreferrer" aria-label="Card Stroage" title="Card Strorage Website">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/plasma-card.png"></img>
             </a>
         </div>
         <div class="credit">
