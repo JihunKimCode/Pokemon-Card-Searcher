@@ -445,6 +445,14 @@ canvas {
     background-color: var(--gray);
 }
 
+#cardStorage{
+    cursor: pointer;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
 #manageCSV{
     cursor: pointer;
     position: fixed;

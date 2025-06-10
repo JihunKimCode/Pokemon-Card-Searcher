@@ -1269,45 +1269,46 @@ function showPopup(image, smallImage, sets, number) {
 // Manage CSV
 let csvContent = `Sets,Number,Image, smallImage\n`;
 
-// csvData Button Event Listener
+// Helper: Show or hide element by ID
+const toggleDisplay = (id, show = true, displayType = 'flex') => {
+    document.getElementById(id).style.display = show ? displayType : 'none';
+};
+
+// Helper: Reset CSV-related UI
+const showCSVUI = (show = true) => {
+    const ids = ['cardStorage', 'encodeHex', 'encodeB64', 'exportCSV', 'undoButton'];
+    ids.forEach(id => toggleDisplay(id, show));
+    document.body.style.overflow = show ? 'hidden' : 'auto';
+};
+
+// Show CSV data popup
 document.getElementById("csvButton").addEventListener("click", () => {
     if (cachedData.length === 0) {
         alert('Try this again later.');
-    } else {
-        // Clear the card container when closing the csvData
-        document.getElementById("csvContainer").innerHTML = ''; 
-        displayCSV(csvContent);
-        document.getElementById("csvData").style.display = "block";
-        document.getElementById('encodeHex').style.display = 'flex';
-        document.getElementById('encodeB64').style.display = 'flex';
-        document.getElementById('exportCSV').style.display = 'flex';
-        document.getElementById('undoButton').style.display = 'flex';
+        return;
     }
+
+    document.getElementById("csvContainer").innerHTML = '';
+    displayCSV(csvContent);
+    toggleDisplay('csvData', true, 'block');
+    showCSVUI(true);
 });
 
-// csvData Close Event Listener
+// Close button inside CSV popup
 document.querySelector('#csvData .close').addEventListener('click', () => {
-    document.getElementById("csvContainer").innerHTML = ''; 
-    document.getElementById("csvData").style.display = "none";
-    document.getElementById('encodeHex').style.display = 'none';
-    document.getElementById('encodeB64').style.display = 'none';
-    document.getElementById('exportCSV').style.display = 'none';
-    document.getElementById('undoButton').style.display = 'none';
-    document.body.style.overflow = "auto";
+    document.getElementById("csvContainer").innerHTML = '';
+    toggleDisplay('csvData', false);
+    showCSVUI(false);
     updateDisplay();
 });
 
-// Close if clicked outside the popup
+// Close popup if clicked outside
 window.addEventListener('click', event => {
     const csvData = document.getElementById('csvData');
-    if (event.target == csvData) {
-        document.getElementById("csvContainer").innerHTML = ''; 
-        csvData.style.display = 'none';
-        document.getElementById('encodeHex').style.display = 'none';
-        document.getElementById('encodeB64').style.display = 'none';
-        document.getElementById('exportCSV').style.display = 'none';
-        document.getElementById('undoButton').style.display = 'none';
-        document.body.style.overflow = "auto";
+    if (event.target === csvData) {
+        document.getElementById("csvContainer").innerHTML = '';
+        toggleDisplay('csvData', false);
+        showCSVUI(false);
         updateDisplay();
     }
 });
