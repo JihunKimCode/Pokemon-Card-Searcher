@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    parseURL();
-
     // Year in Footer
     const currentYear = new Date().getFullYear();
     document.querySelectorAll("#year, #year2").forEach(el => el.textContent = currentYear);
@@ -30,38 +28,96 @@ document.addEventListener('DOMContentLoaded', () => {
     const artistNameBtn = document.getElementById('artistNameBtn');
     const setListBtn = document.getElementById('setListBtn');
 
+    let names = [];
+    let pokemonNames = [];  // Not supported yet.
+    let artistNames = [];   // Not supported yet.
+    let setNames = [];
+    let setInfos = [];      // For showing latest expansions
+
+    async function updateSearchMode(button, placeholder, nameList) {
+        setActiveButton(button);
+        setSearchPlaceholder(placeholder);
+        names = nameList;
+    }
+
+    // Button click events
     pokemonNameBtn.addEventListener('click', () => {
-        setActiveButton(pokemonNameBtn);
-        setSearchPlaceholder("Card Name");
-        names = pokemonNames;
-    });
-    artistNameBtn.addEventListener('click', () => {
-        setActiveButton(artistNameBtn);
-        setSearchPlaceholder("Artist Name");
-        names = artistNames;
-    });
-    setListBtn.addEventListener('click', () => {
-        setActiveButton(setListBtn);
-        setSearchPlaceholder("Expansion Name");
-        names = setNames;
+        updateSearchMode(pokemonNameBtn, "Card Name", pokemonNames);
     });
 
-    // Change search mode using keyboard
+    artistNameBtn.addEventListener('click', () => {
+        updateSearchMode(artistNameBtn, "Artist Name", artistNames);
+    });
+
+    setListBtn.addEventListener('click', () => {
+        updateSearchMode(setListBtn, "Expansion Name", setNames);
+    });
+
+    // Keyboard shortcut events
     document.addEventListener('keydown', function(event) {
-        if (event.altKey && event.key === '1') {
-            setActiveButton(pokemonNameBtn);
-            setSearchPlaceholder("Card Name");
-            names = pokemonNames;
-        } else if (event.altKey && event.key === '2') {
-            setActiveButton(artistNameBtn);
-            setSearchPlaceholder("Artist Name");
-            names = artistNames;
-        } else if (event.altKey && event.key === '3') {
-            setActiveButton(setListBtn);
-            setSearchPlaceholder("Expansion Name");
-            names = setNames;
+        if (!event.altKey) return;
+
+        switch (event.key) {
+            case '1':
+                updateSearchMode(pokemonNameBtn, "Card Name", pokemonNames);
+                break;
+            case '2':
+                updateSearchMode(artistNameBtn, "Artist Name", artistNames);
+                break;
+            case '3':
+                updateSearchMode(setListBtn, "Expansion Name", setNames);
+                break;
         }
     });
+
+    parseURL();
+    // Function to parse URL and update UI
+    async function parseURL() {
+        await fetchAllSets();
+        const params = new URLSearchParams(window.location.search);
+        
+        const searchMode = params.get('searchMode') || 'pokemonName';
+        const searchQuery = params.get('searchQuery') || '';
+        const sortOrder = params.get('sortOrder') || 'newest';
+        const supertypeFilter = params.get('supertypeFilter') || '';
+        const rarityFilter = params.get('rarityFilter') || '';
+
+        // Update UI elements
+        document.getElementById('searchQuery').value = searchQuery;
+        document.getElementById('sortOrder').value = sortOrder;
+        toggleClearButton();
+        
+        // choose placeholder and list names
+        const searchConfig = {
+            pokemonName: {
+                placeholder: 'Card Name',
+                names: pokemonNames
+            },
+            artistName: {
+                placeholder: 'Artist Name',
+                names: artistNames
+            },
+            setList: {
+                placeholder: 'Expansion Name',
+                names: setNames
+            }
+        };
+
+        // Set active button based on searchMode
+        document.querySelectorAll('.search-options button').forEach(async button => {
+            if (button.id === `${searchMode}Btn`) {
+                updateSearchMode(button, searchConfig[searchMode].placeholder, searchConfig[searchMode].names);
+            }
+        });
+        
+        // Fetch cards based on the parsed parameters
+        if (searchQuery) await fetchCards();
+
+        // Update filters
+        document.getElementById('supertypeFilter').value = supertypeFilter;
+        document.getElementById('rarityFilter').value = rarityFilter;
+        if(supertypeFilter || rarityFilter) updateDisplay();
+    }
 
     // Move to search bar when input "/"
     document.addEventListener('keydown', function (event) {
@@ -76,11 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Pokemon Dropdown Suggestion
     const pokemonDropdown = document.getElementById('pokemonDropdown');
-    
-    let pokemonNames = [];  // Not supported yet.
-    let artistNames = [];   // Not supported yet.
-    let setNames = [];
-    let setInfos = [];      // For showing latest expansions
 
     // Fetch All Expansions
     async function fetchAllSets() {
@@ -172,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
         createExpansionSection('Other Expansions', sets2);
     }
 
-    let names = [];
     searchQuery.addEventListener('input', () => {
         if (searchQuery.value.length >= 1) {
             suggestPokemon(names);
@@ -550,38 +600,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-// Function to parse URL and update UI
-async function parseURL() {
-    const params = new URLSearchParams(window.location.search);
-    
-    const searchMode = params.get('searchMode') || 'pokemonName';
-    const searchQuery = params.get('searchQuery') || '';
-    const sortOrder = params.get('sortOrder') || 'newest';
-    const supertypeFilter = params.get('supertypeFilter') || '';
-    const rarityFilter = params.get('rarityFilter') || '';
-
-    // Update UI elements
-    document.getElementById('searchQuery').value = searchQuery;
-    document.getElementById('sortOrder').value = sortOrder;
-    
-    // Set active button based on searchMode
-    document.querySelectorAll('.search-options button').forEach(button => {
-        if (button.id === `${searchMode}Btn`) {
-            setActiveButton(button);
-        }
-    });
-    
-    // Fetch cards based on the parsed parameters
-    if (searchQuery) {
-        await fetchCards();
-    }
-
-    // Update filters
-    document.getElementById('supertypeFilter').value = supertypeFilter;
-    document.getElementById('rarityFilter').value = rarityFilter;
-    if(supertypeFilter || rarityFilter) updateDisplay();
-}
 
 // Randomly choose cards
 function getRandomCards() {
