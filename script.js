@@ -1066,6 +1066,8 @@ async function fetchCards() {
 }
 
 function updateDisplay() {
+    if (cachedData.length === 0) return;
+
     infoDiv.innerHTML = '';
     infoDiv.style.display = 'none';
     outputContainer.style.display = 'table'; 
