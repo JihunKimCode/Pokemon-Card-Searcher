@@ -46,6 +46,14 @@ body {
     background-color: var(--background);
 }
 
+h1, h2{
+    user-select: none;
+}
+
+img{
+    user-select: none;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -129,6 +137,7 @@ h1 a{
     width: 90px;
     height: 36px;
     transition: height .4s ease;
+    user-select: none;
 }
 
 #sortOrder option, #rarityFilter option, #supertypeFilter option{
@@ -251,6 +260,7 @@ canvas {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     outline: none;
+    user-select: none;
 }
 
 #fetchButton {
@@ -278,6 +288,7 @@ canvas {
     display: flex;
     float: right;
     margin-bottom: 10px;
+    user-select: none;
 }
 
 .search-options button {
@@ -360,6 +371,10 @@ canvas {
 
 #clearButton i {
     font-size: 12px; /* Adjust according to the button size */
+}
+
+.options{
+    user-select: none;
 }
 
 #output {
@@ -729,6 +744,7 @@ canvas {
     font-weight: bold;
     cursor: pointer;
     transition: color 0.3s ease;
+    user-select: none;
 }
 
 .close:hover {
