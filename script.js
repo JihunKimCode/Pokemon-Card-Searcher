@@ -912,7 +912,7 @@ function toggleVisibility() {
     }
 }
 
-function populateOptions(cards) {
+function populateFilters(cards) {
     //Rarity Filter
     const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean)));
     const rarityFilter = document.getElementById('rarityFilter');
@@ -945,8 +945,6 @@ function populateOptions(cards) {
     });
 
     supertypeFilter.value = supertypes.includes(currentSelectedSupertype) ? currentSelectedSupertype : '';
-
-    updateDisplay();
 }
 
 function getPrice(card) {
@@ -1051,7 +1049,7 @@ async function fetchCards() {
             if (document.getElementById('setListBtn').classList.contains('active')) {
                 cachedData.sort((a, b) => compareIds(a, b, 1));
             }
-            populateOptions(cachedData);
+            populateFilters(cachedData);
             updateDisplay();
         } catch (error) {
             loader.style.display = 'none';
@@ -1081,6 +1079,7 @@ function updateDisplay() {
     if (rarityFilter) filteredData = filteredData.filter(card => card.rarity === rarityFilter);
     if (supertypeFilter) filteredData = filteredData.filter(card => card.supertype === supertypeFilter);
     filteredCachedData = filteredData;
+    populateFilters(filteredData);
 
     const sortedData = sortCards(filteredData, sortOrder);
     const outputDiv = document.getElementById('output');

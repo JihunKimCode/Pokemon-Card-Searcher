@@ -320,6 +320,7 @@ canvas {
     top: calc(100% - 2px); /* Position the dropdown below the search input */
     width: 189px;
     box-shadow: 0 3px 3px 0 rgba(0,0,0,0.2);
+    user-select: none;
 }
 
 #pokemonDropdown div{
