@@ -1053,9 +1053,9 @@ async function fetchCards() {
             updateDisplay();
         } catch (error) {
             loader.style.display = 'none';
-            output.style.display = 'block';
-            output.classList.add('error');
-            output.innerHTML = `<p>Error: ${error.message}</p>`;    
+            outputDiv.style.display = 'block';
+            outputDiv.classList.add('error');
+            outputDiv.innerHTML = `<p>Error: ${error.message}</p>`;    
             console.error('There has been a problem with your fetch operation:', error);
         }
     } else {
