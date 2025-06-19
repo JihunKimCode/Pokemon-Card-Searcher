@@ -1030,8 +1030,10 @@ async function fetchCards() {
                 try {
                     const response = await fetch(`${url}&page=${currentPage}`);
                     if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
-            
+                    
                     const data = await response.json();
+                    if (data.count == 0 && currentPage == 1) throw new Error('No cards found.');
+                    
                     cachedData.push(...data.data);
             
                     if (data.data.length < 250) {
@@ -1042,6 +1044,15 @@ async function fetchCards() {
                 } catch (error) {
                     console.error('Failed to fetch data:', error);
                     hasMoreData = false; // Stop fetching on error
+
+                    // Display Error Message
+                    loader.style.display = 'none';
+                    outputDiv.style.display = 'block';
+                    outputDiv.classList.add('error');
+                    outputDiv.innerHTML = `
+                        <p class="error-msg">No cards found.</p>
+                        <p class="error-msg">(Searched by ${currentSearchMode}.)</p>
+                    `;
                 }
             }
             
