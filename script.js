@@ -423,10 +423,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    let challengeMode = false;  // Flag for challenge mode
-    let originalCards = [];     // Store original cards
+    let challengeMode = false;          // Flag for challenge mode
+    let wonderPickMode = false;         // Flag for wonderpick mode
+    const revealedIndices = new Set();  // Track Revealed Cards
+    let originalCards = [];             // Store original cards
 
     document.getElementById('getChallengeBtn').addEventListener('click', startChallenge);
+    document.getElementById('wonderPickBtn').addEventListener('click', setWonderPickMode);
+
+    // Change Wonderpick button
+    function setWonderPickMode() {
+        wonderPickMode = !wonderPickMode;
+
+        const btn = document.getElementById('wonderPickBtn');
+        const icon = btn.querySelector('i');
+
+        if (wonderPickMode) {
+            icon.className = 'fa-solid fa-magnifying-glass';
+            btn.title = 'Wonder Pick Enabled';
+        } else {
+            icon.className = 'fa-solid fa-question';
+            btn.title = 'Wonder Pick Disabled';
+        }
+    }
     
     function shuffle(array) {
         // Fisher-Yates Shuffle
@@ -437,14 +456,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return array;
     }
     
+    // Switch getChallenge Button and wonderPick Button
     function toggleButton(disable) {
         const challengeBtn = document.getElementById('getChallengeBtn');
+        const wonderPickBtn = document.getElementById('wonderPickBtn');
+
+        challengeMode = disable;
+
+        if (disable) {
+            challengeBtn.style.display = 'none';
+            wonderPickBtn.style.display = 'flex';
+        } else {
+            challengeBtn.style.display = 'flex';
+            wonderPickBtn.style.display = 'none';
+        }
+        
         challengeBtn.disabled = disable;
-        challengeBtn.classList.toggle('disabled', disable);
-    }    
+        revealedIndices.clear();
+    }
 
     // Get Challenge Button Click Event
     function startChallenge() {
+        document.getElementById('redrawBtn').classList.add('disabled');
         const container = document.getElementById("cardContainer");
         const cards = Array.from(container.getElementsByClassName('card'));
     
@@ -454,7 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     
         toggleButton(true);         // Disable Get Challenge Button
-        challengeMode = true;    
         originalCards = shuffle(cards).map(card => card.cloneNode(true));
         container.innerHTML = '';   // Clear the container
     
@@ -477,51 +509,58 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     function revealCard(index, container, challengeCards) {
-        if (!challengeMode) return;
-    
-        // Get the clicked card element
+        if (!challengeMode || revealedIndices.has(index)) return; // Prevent re-reveal
+
         const clickedCard = challengeCards[index];
-    
-        // Ensure the clicked card is brought to the front during the transformation
+        revealedIndices.add(index); // Mark this card as revealed
+
+        // Bring to front and scale
         clickedCard.style.transition = 'transform 0.3s ease, z-index 0s';
         clickedCard.style.transform = 'scale(1.5)';
         clickedCard.style.zIndex = '1000';
 
-        // Reveal the image by replacing the mystery image with the original one
+        // Reveal after scale effect
         setTimeout(() => {
             clickedCard.querySelector('img').src = originalCards[index].querySelector('img').src;
-            
-        // After revealing the image, reset the scaling
-        setTimeout(() => {
-            clickedCard.style.transform = 'scale(1.0)';
 
-            // Wait for the transform transition to complete before resetting zIndex
-            clickedCard.addEventListener('transitionend', function resetZIndex(event) {
-                if (event.propertyName === 'transform') {
-                    clickedCard.style.zIndex = '';
-                    clickedCard.removeEventListener('transitionend', resetZIndex);
-                }
-            });
-        }, 500);
-    
-        }, 100); // Delay before revealing the image to make sure the scaling effect happens first
-    
-        let revealIndex = 0;
-        let revealInterval = setInterval(() => {
-            if (revealIndex < challengeCards.length) {
-                challengeCards[revealIndex].querySelector('img').src = originalCards[revealIndex].querySelector('img').src;
-                revealIndex++;
-            } else {
-                clearInterval(revealInterval);
-                endChallenge(container);
-            }
+            setTimeout(() => {
+                clickedCard.style.transform = 'scale(1.0)';
+
+                clickedCard.addEventListener('transitionend', function resetZIndex(event) {
+                    if (event.propertyName === 'transform') {
+                        clickedCard.style.zIndex = '';
+                        clickedCard.removeEventListener('transitionend', resetZIndex);
+                    }
+                });
+
+                if (revealedIndices.size === challengeCards.length) endChallenge(container);
+            }, 500);
         }, 100);
+
+        // If not in wonderPickMode, reveal all cards one-by-one automatically
+        if (!wonderPickMode) {
+            container.style.pointerEvents = 'none';
+
+            let revealIndex = 0;
+            let revealInterval = setInterval(() => {
+                if (revealIndex < challengeCards.length) {
+                    if (!revealedIndices.has(revealIndex)) {
+                        challengeCards[revealIndex].querySelector('img').src = originalCards[revealIndex].querySelector('img').src;
+                        revealedIndices.add(revealIndex);
+                    }
+                    revealIndex++;
+                } else {
+                    container.style.pointerEvents = 'auto';
+                    clearInterval(revealInterval);
+                    endChallenge(container);
+                }
+            }, 100);
+        }
     }
     
-    function endChallenge(container) {
-        challengeMode = false;
-    
+    function endChallenge(container) {    
         toggleButton(false);        // Enable Get Challenge Button
+        document.getElementById('redrawBtn').classList.remove('disabled');
         container.innerHTML = '';   // Clear challenge cards
     
         // Restore original cards (with the original image and onclick event)
@@ -556,7 +595,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
         document.getElementById("luckyDraw").style.display = "block";
         document.getElementById('redrawBtn').style.display = 'flex';
+        document.getElementById('redrawBtn').classList.remove('disabled');
         document.getElementById('getChallengeBtn').style.display = 'flex';
+        document.getElementById('wonderPickBtn').style.display = 'none';
     });
     
     // Draw Close Event Listener
@@ -567,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("luckyDraw").style.display = "none";
         document.getElementById('redrawBtn').style.display = 'none';
         document.getElementById('getChallengeBtn').style.display = 'none';
+        document.getElementById('wonderPickBtn').style.display = 'none';
         document.body.style.overflow = "auto";
     });
     

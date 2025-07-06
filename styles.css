@@ -496,12 +496,22 @@ canvas {
     position: relative;
 }
 
-#getChallengeBtn.disabled {
+#redrawBtn.disabled, #getChallengeBtn.disabled {
     opacity: 0.5;
     pointer-events: none;
 }
 
 #getChallengeBtn {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 80px;
+    color: white;
+    cursor: pointer;
+}
+
+#wonderPickBtn{
+    display: none;
     position: fixed;
     bottom: 20px;
     right: 80px;
