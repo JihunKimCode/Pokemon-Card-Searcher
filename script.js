@@ -1580,5 +1580,6 @@ const rarityOrder = {
     "Special Illustration Rare": 76,    // Full-Art
     "Black White Rare": 77,             // Black Blot, White Flare
     "Hyper Rare": 80,                   // Gold Cards
+    "Mega Hyper Rare": 80,              // Gold Cards
     "Promo": 90                         // Event Cards
 };
