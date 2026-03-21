@@ -1579,6 +1579,7 @@ const rarityOrder = {
     "Illustration Rare": 75,            // Full-Art
     "Special Illustration Rare": 76,    // Full-Art
     "Black White Rare": 77,             // Black Blot, White Flare
+    "MEGA_ATTACK_RARE": 77,             // Ascended Heroes
     "Hyper Rare": 80,                   // Gold Cards
     "Mega Hyper Rare": 80,              // Gold Cards
     "Promo": 90                         // Event Cards
