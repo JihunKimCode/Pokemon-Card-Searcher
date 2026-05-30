@@ -1317,7 +1317,10 @@ function showPopup(image, smallImage, sets, number) {
       
     document.querySelector('#popup .close').addEventListener('click', () => {
         popup.style.display = "none";
-        document.body.style.overflow = "auto";
+
+        const luckyDraw = document.getElementById('luckyDraw');
+        document.body.style.overflow = luckyDraw && luckyDraw.style.display === "block" ? "hidden" : "auto";
+
         addCSV.style.display = 'none';
         removeCSV.style.display = 'none';
         count.style.display = 'none';
@@ -1328,7 +1331,10 @@ function showPopup(image, smallImage, sets, number) {
     window.onclick = event => {
         if (event.target == popup) {
             popup.style.display = "none";
-            document.body.style.overflow = "auto";
+
+            const luckyDraw = document.getElementById('luckyDraw');
+            document.body.style.overflow = luckyDraw && luckyDraw.style.display === "block" ? "hidden" : "auto";
+            
             addCSV.style.display = 'none';
             removeCSV.style.display = 'none';
             count.style.display = 'none';
