@@ -1551,6 +1551,7 @@ document.getElementById('exportCSV').addEventListener('click', () => {
 
 // Rarity Order for sorting
 const rarityOrder = {
+    "Pikachu Rare": 1,                  // 30th Anniversay; guaranteed
     "Common": 10,
     "Uncommon": 20,
     "Rare": 30,                         // Regular
@@ -1563,6 +1564,7 @@ const rarityOrder = {
     "Rare Prime": 61,
     "Rare Holo LV.X": 61,
     "Rare Holo EX": 61,
+    "Rare Holo ex": 61,                 // 30th Anniversary
     "Rare Holo GX": 61,
     "LEGEND": 61,
     "Rare BREAK": 61,
@@ -1573,8 +1575,11 @@ const rarityOrder = {
     "Radiant Rare": 62,
     "Rare Holo V": 63,
     "Rare Holo VSTAR": 64,
+    "Holo Rare VSTAR": 64,              // 30th Anniversary
     "Rare Holo VMAX": 65,
+    "Holo Rare VMAX": 65,               // 30th Anniversary
     "Trainer Gallery Rare Holo": 66,
+    "Holo Rare V": 68,
     "Rare Secret": 70,                  // Out of numbers
     "Rare Shining": 71,                 // Shiny Pokemon
     "Shiny Rare": 72,                   // Shiny Pokemon
@@ -1588,5 +1593,7 @@ const rarityOrder = {
     "MEGA_ATTACK_RARE": 77,             // Ascended Heroes
     "Hyper Rare": 80,                   // Gold Cards
     "Mega Hyper Rare": 80,              // Gold Cards
+    "Futuristic Rare":81,               // 30th Anniversary
+    "RGB Rare":82,                      // 30th Anniversary
     "Promo": 90                         // Event Cards
 };
